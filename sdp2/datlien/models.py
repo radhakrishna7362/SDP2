@@ -13,7 +13,6 @@ class CentralHub(models.Model):
     password = models.CharField(max_length=20)
     email = models.EmailField()
     address = models.CharField(max_length=100)
-    established_on = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.city} - {self.state}"
 
@@ -24,6 +23,5 @@ class Hub(models.Model):
     password = models.CharField(max_length=20)
     email = models.EmailField()
     address = models.CharField(max_length=100)
-    established_on = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.city
