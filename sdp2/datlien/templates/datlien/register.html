@@ -1,0 +1,37 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+
+{% load widget_tweaks %}
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="columns">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title is-centered">
+                            Sign Up
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        {% for field in form %}
+                            <div class="column">
+                                <label class="label">{{field.label_tag}}</label>
+                                {% render_field field class="input is-primary"%}
+                            </div>
+                        {% endfor %}
+                        <div class="column is-centered">
+                            <input class="button is-link is-primary" type="submit">
+                        </div>
+                        <div class="column">
+                            <a class="button is-link is-light" href="{% url 'login' %}">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
