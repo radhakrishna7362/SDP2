@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse, redirect
-from .forms import LoginForm,CentralHubForm,HubForm
+from .forms import LoginForm,CentralHubForm,HubForm,SignUpForm
 from .models import CentralHub, Hub
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -35,12 +35,19 @@ def register_view(request):
     if request.user.is_authenticated:
         return redirect('home')
 
-    form = UserCreationForm()
+    if request.method == "POST":
+        filledform = SignUpForm(request.POST)
+        if filledform.is_valid():
+            filledform.save()
+            return redirect('login')
+    else:
+        form = SignUpForm()
     username = request.user.get_username()
     return render(request, "datlien/register.html",{
         'username':username,
         'form':form
     })
+
 
 def viewHubs(request):
     if not request.user.is_authenticated:
