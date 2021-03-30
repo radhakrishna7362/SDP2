@@ -1,4 +1,11 @@
 {% extends "datlien/layout.html" %}
 {% block 'body' %}
+<div>
+    <p>{{ username }}</p>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+<div>
+    <p><a href="{% url 'addHub' %}">Add Hub</a></p>
     <p><a href="{% url 'addCentralHub' %}">Add Central Hub</a></p>
+</div>
 {% endblock %}

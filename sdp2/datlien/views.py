@@ -7,7 +7,11 @@ from django.contrib.auth import authenticate, login, logout
 def home(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    return render(request, "datlien/index.html")
+
+    username = request.user.get_username()
+    return render(request, "datlien/index.html",{
+        'username':username
+    })
 
 def login_view(request):
     if request.method == "POST":
