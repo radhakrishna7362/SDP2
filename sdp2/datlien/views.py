@@ -2,6 +2,7 @@ from django.shortcuts import render,HttpResponse, redirect
 from .forms import LoginForm,CentralHubForm,HubForm
 from .models import CentralHub, Hub
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 def home(request):
@@ -30,6 +31,39 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    form = UserCreationForm()
+    username = request.user.get_username()
+    return render(request, "datlien/register.html",{
+        'username':username,
+        'form':form
+    })
+
+def viewHubs(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    hubs = Hub.objects.all()
+    username = request.user.get_username()
+    return render(request, "datlien/viewHubs.html",{
+        'username':username,
+        'hubs':hubs
+    })
+
+def viewCentralHubs(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+        
+    central_hubs = CentralHub.objects.all()
+    username = request.user.get_username()
+    return render(request, "datlien/viewCentralHubs.html",{
+        'username':username,
+        'central_hubs':central_hubs
+    })
+
 def addCentralHub(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -43,9 +77,10 @@ def addCentralHub(request):
         form = CentralHubForm()
         username = request.user.get_username()
         return render(request, "datlien/addCentralHub.html",{
-            'form':form
+            'form':form,
+            'username':username,
         })
-    
+
 def addHub(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -59,5 +94,6 @@ def addHub(request):
         form = HubForm()
         username = request.user.get_username()
         return render(request, "datlien/addHub.html",{
-            'form':form
+            'form':form,
+            'username':username
         })

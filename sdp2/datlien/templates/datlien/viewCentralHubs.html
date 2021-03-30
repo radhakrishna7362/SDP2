@@ -1,0 +1,23 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+
+{% load widget_tweaks %}
+<div class="m-2">
+    <a class="btn btn-outline-success" href="{% url 'addCentralHub' %}"> <i class="fa fa-plus"></i> <span class="h6">Central Hub</span></a>
+</div>
+<div class="m-2">
+    {% for central_hub in central_hubs %}
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                {{central_hub.city}}
+            </div>
+            <div class="card-content m-2">
+                <p>{{central_hub.state}}</p>
+                <p>{{central_hub.address}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
