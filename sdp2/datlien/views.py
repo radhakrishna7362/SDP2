@@ -3,17 +3,18 @@ from .forms import LoginForm,CentralHubForm,HubForm,SignUpForm
 from .models import CentralHub, Hub
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from .decorators import unauthenticated_user
 
 # Create your views here.
+@login_required(login_url="/login")
 def home(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     username = request.user.get_username()
     return render(request, "datlien/index.html",{
         'username':username
     })
 
+@unauthenticated_user
 def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -21,38 +22,44 @@ def login_view(request):
         user = authenticate(request, username=username , password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect(request.GET.get('next'))
+        else:
+            form = LoginForm()
+            message = "Invalid Login"
+            return render(request,"datlien/login.html",{
+                'form':form,
+                'message': message
+            })
     form = LoginForm()
     return render(request,"datlien/login.html",{
         'form':form
     })
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
-
+@unauthenticated_user
 def register_view(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-
     if request.method == "POST":
         filledform = SignUpForm(request.POST)
         if filledform.is_valid():
             filledform.save()
-            return redirect('login')
-    else:
-        form = SignUpForm()
-    username = request.user.get_username()
+            return redirect('home')
+        else:
+            form = SignUpForm()
+            username = request.user.get_username()
+            return render(request, "datlien/register.html",{
+                'form':form,
+                'message':"Please Try Again."
+            })
+    form = SignUpForm()
     return render(request, "datlien/register.html",{
-        'username':username,
         'form':form
     })
 
+def logout_view(request):
+    logout(request)
+    return redirect('home')
 
+@login_required(login_url="/login")
 def viewHubs(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     hubs = Hub.objects.all()
     username = request.user.get_username()
     return render(request, "datlien/viewHubs.html",{
@@ -60,10 +67,8 @@ def viewHubs(request):
         'hubs':hubs
     })
 
+@login_required(login_url="/login")
 def viewCentralHubs(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-        
     central_hubs = CentralHub.objects.all()
     username = request.user.get_username()
     return render(request, "datlien/viewCentralHubs.html",{
@@ -71,15 +76,22 @@ def viewCentralHubs(request):
         'central_hubs':central_hubs
     })
 
+@login_required(login_url="/login")
 def addCentralHub(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     if request.method == "POST":
         filledform = CentralHubForm(request.POST)
         if filledform.is_valid():
             filledform.save()
             return redirect('home')
+        else:
+            form = CentralHubForm()
+            username = request.user.get_username()
+            message = "Try Again"
+            return render(request, "datlien/addCentralHub.html",{
+                'form':form,
+                'username':username,
+                'message':message
+            })
     else:
         form = CentralHubForm()
         username = request.user.get_username()
@@ -88,15 +100,22 @@ def addCentralHub(request):
             'username':username,
         })
 
+@login_required(login_url="/login")
 def addHub(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     if request.method == "POST":
         filledform = HubForm(request.POST)
         if filledform.is_valid():
             filledform.save()
             return redirect('home')
+        else:
+            form = HubForm()
+            username = request.user.get_username()
+            message = "Try Again"
+            return render(request, "datlien/addHub.html",{
+                'form':form,
+                'username':username,
+                'message':message
+            })
     else:
         form = HubForm()
         username = request.user.get_username()

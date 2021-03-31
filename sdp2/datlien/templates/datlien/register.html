@@ -10,21 +10,22 @@
                 Sign Up
             </div>
             <div class="card-body d-flex flex-column justify-content-sm-center">
+                {% if message %}
+                    <div class="alert alert-primary text-center" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
                 <div class="d-flex">
                     <form method="POST" novalidate>
                         {% csrf_token %}
                         {% for field in form %}
-                            <div class="mb-3 row">
-                                {% if field.errors %}
-                                    <div class="alert alert-primary" role="alert">
-                                        {{ field.errors }}
-                                    </div>
-                                {% endif %}
-                                <label class="form-label">{{field.label_tag}}</label>
-                                <div>
-                                    {% render_field field class="form-control"%}
-                                </div>
+                        <div class="mb-3 row form-group {%if field.errors %}alert alert-danger{%endif%}">
+                            {{ field.errors }}
+                            {{ field.label_tag }}
+                            <div>
+                                {% render_field field class="form-control" %}
                             </div>
+                        </div>
                         {% endfor %}
                         <div class="text-center">
                             <button type="submit" class="btn btn-outline-success">Sign Up</button>
@@ -33,7 +34,7 @@
                 </div>
             </div>
             <div class="card-footer text-center">
-                Already a Member: <a href="{% url 'login' %}">Sign In</button>
+                Already a Member: <a href="{% url 'home' %}">Sign In</button>
             </div>
         </div>
     </div>
