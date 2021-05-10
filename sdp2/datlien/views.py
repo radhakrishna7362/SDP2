@@ -5,9 +5,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 
 # Create your views here.
-@login_required(login_url="/login")
+@login_required(login_url="login/")
 def home(request):
     username = request.user.get_username()
     return render(request, "datlien/index.html",{
@@ -58,7 +60,7 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
-@login_required(login_url="/login")
+@login_required(login_url="login/")
 def viewHubs(request):
     hubs = Hub.objects.all()
     username = request.user.get_username()
@@ -67,7 +69,7 @@ def viewHubs(request):
         'hubs':hubs
     })
 
-@login_required(login_url="/login")
+@login_required(login_url="login/")
 def viewCentralHubs(request):
     central_hubs = CentralHub.objects.all()
     username = request.user.get_username()
@@ -76,11 +78,14 @@ def viewCentralHubs(request):
         'central_hubs':central_hubs
     })
 
-@login_required(login_url="/login")
+@login_required(login_url="login/")
 def addCentralHub(request):
     if request.method == "POST":
         filledform = CentralHubForm(request.POST)
         if filledform.is_valid():
+            password = make_password(filledform.cleaned_data['password'])
+            User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
+            filledform.cleaned_data['password']=password
             filledform.save()
             return redirect('home')
         else:
@@ -100,7 +105,7 @@ def addCentralHub(request):
             'username':username,
         })
 
-@login_required(login_url="/login")
+@login_required(login_url="login/")
 def addHub(request):
     if request.method == "POST":
         filledform = HubForm(request.POST)
