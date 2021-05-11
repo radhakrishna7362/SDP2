@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse, redirect
-from .forms import LoginForm,CentralHubForm,HubForm,SignUpForm
+from .forms import LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm
 from .models import CentralHub, Hub
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -12,8 +12,10 @@ from django.contrib.auth.hashers import make_password
 @login_required(login_url="login/")
 def home(request):
     username = request.user.get_username()
+    superuser = request.user.is_superuser
     return render(request, "datlien/index.html",{
-        'username':username
+        'username':username,
+        'superuser':superuser,
     })
 
 @unauthenticated_user
@@ -61,15 +63,6 @@ def logout_view(request):
     return redirect('home')
 
 @login_required(login_url="login/")
-def viewHubs(request):
-    hubs = Hub.objects.all()
-    username = request.user.get_username()
-    return render(request, "datlien/viewHubs.html",{
-        'username':username,
-        'hubs':hubs
-    })
-
-@login_required(login_url="login/")
 def viewCentralHubs(request):
     central_hubs = CentralHub.objects.all()
     username = request.user.get_username()
@@ -83,10 +76,8 @@ def addCentralHub(request):
     if request.method == "POST":
         filledform = CentralHubForm(request.POST)
         if filledform.is_valid():
-            password = make_password(filledform.cleaned_data['password'])
+            filledform.save()          
             User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
-            filledform.cleaned_data['password']=password
-            filledform.save()
             return redirect('home')
         else:
             form = CentralHubForm()
@@ -106,11 +97,46 @@ def addCentralHub(request):
         })
 
 @login_required(login_url="login/")
+def editCentralHub(request,username):
+    if request.method == "POST":
+        central_hub = CentralHub.objects.get(username=username)
+        filledform = EditCentralHubForm(request.POST,instance=central_hub)
+        if filledform.is_valid():
+            filledform.save()
+            return redirect('home')
+        else:
+            form = EditCentralHubForm(instance=central_hub)
+            username = request.user.get_username()
+            message = "Try Again"
+            return render(request, "datlien/editCentralHub.html",{
+                'form':form,
+                'username':username,
+                'message':message
+            })
+    else:
+        central_hub = CentralHub.objects.get(username=username)
+        form = EditCentralHubForm(instance=central_hub)
+        return render(request,"datlien/editCentralHub.html",{
+            'form':form,
+            'username':username,
+        })
+
+@login_required(login_url="login/")
+def viewHubs(request):
+    hubs = Hub.objects.all()
+    username = request.user.get_username()
+    return render(request, "datlien/viewHubs.html",{
+        'username':username,
+        'hubs':hubs
+    })
+
+@login_required(login_url="login/")
 def addHub(request):
     if request.method == "POST":
         filledform = HubForm(request.POST)
         if filledform.is_valid():
             filledform.save()
+            User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
             return redirect('home')
         else:
             form = HubForm()
@@ -127,4 +153,29 @@ def addHub(request):
         return render(request, "datlien/addHub.html",{
             'form':form,
             'username':username
+        })
+
+@login_required(login_url="login/")
+def editHub(request,username):
+    if request.method == "POST":
+        hub = Hub.objects.get(username=username)
+        filledform = EditHubForm(request.POST,instance=hub)
+        if filledform.is_valid():
+            filledform.save()
+            return redirect('home')
+        else:
+            form = EditHubForm(instance=hub)
+            username = request.user.get_username()
+            message = "Try Again"
+            return render(request, "datlien/editHub.html",{
+                'form':form,
+                'username':username,
+                'message':message
+            })
+    else:
+        hub = Hub.objects.get(username=username)
+        form = EditHubForm(instance=hub)
+        return render(request,"datlien/editHub.html",{
+            'form':form,
+            'username':username,
         })

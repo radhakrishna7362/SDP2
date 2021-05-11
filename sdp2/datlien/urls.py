@@ -10,5 +10,7 @@ urlpatterns = [
     path('viewHubs/', views.viewHubs, name='viewHubs'),
     path('viewCentralHubs/', views.viewCentralHubs, name='viewCentralHubs'),
     path('addHub/', views.addHub, name='addHub'),
-    path('addCentralHub/', views.addCentralHub, name='addCentralHub'),    
+    path('addCentralHub/', views.addCentralHub, name='addCentralHub'),
+    path('editCentralHub/<str:username>', views.editCentralHub, name='editCentralHub'),
+    path('editHub/<str:username>', views.editHub, name='editHub'),
 ]

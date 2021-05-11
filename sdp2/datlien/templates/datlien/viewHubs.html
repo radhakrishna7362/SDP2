@@ -16,6 +16,9 @@
                 <p>{{hub.central_hub}}</p>
                 <p>{{hub.address}}</p>
             </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'editHub' hub.username %}"> <i class="fa fa-edit"></i> </a>
+            </div>
         </div>
     </div>
     {% endfor %}

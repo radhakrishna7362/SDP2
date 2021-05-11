@@ -23,12 +23,14 @@
               <li class="nav-item">
                 <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
               </li>
+              {% if superuser %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'viewHubs' %}">Hubs</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'viewCentralHubs' %}">Central Hubs</a>
               </li>
+              {% endif %}
             </ul>
             <div class="d-flex">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
