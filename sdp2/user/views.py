@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse, redirect
-from .forms import LoginForm,SignUpForm
+from .forms import LoginForm,SignUpForm,DeliveryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -8,9 +8,26 @@ from .decorators import unauthenticate_user
 # Create your views here.
 @login_required(login_url='login/')
 def home(request):
+    if request.method == "POST":
+        filledform = DeliveryForm(request.POST)
+        if filledform.is_valid():
+            filledform.cleaned_data['user'] = request.user.get_username()
+            filledform.save()
+            return redirect('userhome')
+        else:
+            form = DeliveryForm()
+            message = "Try Again"
+            return render(request,"user/index.html",{
+                'username':username,
+                'form':form,
+                'message': message,
+            })
+
     username = request.user.get_username()
+    form = DeliveryForm()
     return render(request, "user/index.html",{
-        'username':username
+        'username':username,
+        'form':form
     })
 
 @unauthenticate_user

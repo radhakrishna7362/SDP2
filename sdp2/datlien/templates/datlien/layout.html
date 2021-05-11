@@ -31,6 +31,14 @@
                 <a class="nav-link" href="{% url 'viewCentralHubs' %}">Central Hubs</a>
               </li>
               {% endif %}
+              {% if not superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'drequest' %}">Delivery Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'crequest' %}">Completed Requests</a>
+              </li>
+              {% endif %}
             </ul>
             <div class="d-flex">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">

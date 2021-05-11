@@ -66,9 +66,11 @@ def logout_view(request):
 def viewCentralHubs(request):
     central_hubs = CentralHub.objects.all()
     username = request.user.get_username()
+    superuser = request.user.is_superuser
     return render(request, "datlien/viewCentralHubs.html",{
         'username':username,
-        'central_hubs':central_hubs
+        'central_hubs':central_hubs,
+        'superuser':superuser,
     })
 
 @login_required(login_url="login/")
@@ -82,18 +84,22 @@ def addCentralHub(request):
         else:
             form = CentralHubForm()
             username = request.user.get_username()
+            superuser = request.user.is_superuser
             message = "Try Again"
             return render(request, "datlien/addCentralHub.html",{
                 'form':form,
                 'username':username,
-                'message':message
+                'message':message,
+                'superuser':superuser
             })
     else:
         form = CentralHubForm()
         username = request.user.get_username()
+        superuser = request.user.is_superuser
         return render(request, "datlien/addCentralHub.html",{
             'form':form,
             'username':username,
+            'superuser':superuser
         })
 
 @login_required(login_url="login/")
@@ -107,16 +113,21 @@ def editCentralHub(request,username):
         else:
             form = EditCentralHubForm(instance=central_hub)
             username = request.user.get_username()
+            superuser = request.user.is_superuser
             message = "Try Again"
             return render(request, "datlien/editCentralHub.html",{
                 'form':form,
                 'username':username,
-                'message':message
+                'message':message,
+                'superuser':superuser
             })
     else:
         central_hub = CentralHub.objects.get(username=username)
         form = EditCentralHubForm(instance=central_hub)
+        username=request.user.get_username()
+        superuser = request.user.is_superuser
         return render(request,"datlien/editCentralHub.html",{
+            'superuser':superuser,
             'form':form,
             'username':username,
         })
@@ -125,9 +136,11 @@ def editCentralHub(request,username):
 def viewHubs(request):
     hubs = Hub.objects.all()
     username = request.user.get_username()
+    superuser = request.user.is_superuser
     return render(request, "datlien/viewHubs.html",{
         'username':username,
-        'hubs':hubs
+        'hubs':hubs,
+        'superuser':superuser,
     })
 
 @login_required(login_url="login/")
@@ -141,18 +154,22 @@ def addHub(request):
         else:
             form = HubForm()
             username = request.user.get_username()
+            superuser = request.user.is_superuser
             message = "Try Again"
             return render(request, "datlien/addHub.html",{
                 'form':form,
                 'username':username,
-                'message':message
+                'message':message,
+                'superuser':superuser,
             })
     else:
         form = HubForm()
         username = request.user.get_username()
+        superuser = request.user.is_superuser
         return render(request, "datlien/addHub.html",{
             'form':form,
-            'username':username
+            'username':username,
+            'superuser':superuser
         })
 
 @login_required(login_url="login/")
@@ -166,8 +183,10 @@ def editHub(request,username):
         else:
             form = EditHubForm(instance=hub)
             username = request.user.get_username()
+            superuser = request.user.is_superuser
             message = "Try Again"
             return render(request, "datlien/editHub.html",{
+                'superuser':superuser,
                 'form':form,
                 'username':username,
                 'message':message
@@ -175,7 +194,28 @@ def editHub(request,username):
     else:
         hub = Hub.objects.get(username=username)
         form = EditHubForm(instance=hub)
+        superuser = request.user.is_superuser
+        username = request.user.get_username()
         return render(request,"datlien/editHub.html",{
             'form':form,
             'username':username,
+            'superuser':superuser,
         })
+
+@login_required(login_url="login/")
+def drequest(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    return render(request, "datlien/drequest.html",{
+            'username':username,
+            'superuser':superuser,
+    })
+
+@login_required(login_url="login/")
+def crequest(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    return render(request, "datlien/crequest.html",{
+            'username':username,
+            'superuser':superuser,
+    })

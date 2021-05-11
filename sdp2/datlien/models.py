@@ -8,7 +8,7 @@ class State(models.Model):
         return self.name
 
 class CentralHub(models.Model):
-    state = models.ForeignKey(State,on_delete=models.CASCADE)
+    state = models.ForeignKey(State,on_delete=models.CASCADE,related_name='+')
     city = models.CharField(max_length=20)
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
@@ -19,7 +19,7 @@ class CentralHub(models.Model):
         return f"{self.city} - {self.state}"
 
 class Hub(models.Model):
-    central_hub = models.ForeignKey(CentralHub,on_delete=models.CASCADE)
+    central_hub = models.ForeignKey(CentralHub,on_delete=models.CASCADE,related_name='+')
     city = models.CharField(max_length=100)
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
