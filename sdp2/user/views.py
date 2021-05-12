@@ -11,24 +11,29 @@ def home(request):
     if request.method == "POST":
         filledform = DeliveryForm(request.POST)
         if filledform.is_valid():
-            filledform.cleaned_data['user'] = request.user.get_username()
             filledform.save()
             return redirect('userhome')
         else:
             form = DeliveryForm()
             message = "Try Again"
+            username = request.user.get_username()
             return render(request,"user/index.html",{
                 'username':username,
                 'form':form,
                 'message': message,
             })
-
-    username = request.user.get_username()
-    form = DeliveryForm()
-    return render(request, "user/index.html",{
-        'username':username,
-        'form':form
-    })
+    else:
+        username = request.user.get_username()
+        initial_dict = {
+            "user" : username,
+            "source" : None,
+            "destination":None,
+        }
+        form = DeliveryForm(initial=initial_dict)
+        return render(request, "user/index.html",{
+            'username':username,
+            'form':form
+        })
 
 @unauthenticate_user
 def login_view(request):
