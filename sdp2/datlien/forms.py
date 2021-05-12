@@ -14,9 +14,10 @@ class CentralHubForm(forms.ModelForm):
         fields = ['state','city','username','password','email','address']
 
 class EditCentralHubForm(forms.ModelForm):
+    password=forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = CentralHub
-        fields = ['state','city','email','address']
+        fields = ['state','city','email','password','address']
 
 class HubForm(forms.ModelForm):
     password = forms.CharField(max_length=20,widget=forms.PasswordInput)
@@ -27,7 +28,7 @@ class HubForm(forms.ModelForm):
 class EditHubForm(forms.ModelForm):
     class Meta:
         model = Hub
-        fields = ['central_hub','city','email','address']
+        fields = ['central_hub','city','email','password','address']
 
 class SignUpForm(UserCreationForm):
     class Meta:

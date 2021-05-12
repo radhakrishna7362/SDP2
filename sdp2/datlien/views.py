@@ -1,3 +1,4 @@
+from user.models import Delivery
 from django.shortcuts import render,HttpResponse, redirect
 from .forms import LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm
 from .models import CentralHub, Hub
@@ -6,7 +7,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
 
 # Create your views here.
 @login_required(login_url="login/")
@@ -108,6 +108,8 @@ def editCentralHub(request,username):
         central_hub = CentralHub.objects.get(username=username)
         filledform = EditCentralHubForm(request.POST,instance=central_hub)
         if filledform.is_valid():
+            u = User.objects.get(username=username)
+            u.set_password(filledform.cleaned_data['password'])
             filledform.save()
             return redirect('home')
         else:
@@ -178,6 +180,8 @@ def editHub(request,username):
         hub = Hub.objects.get(username=username)
         filledform = EditHubForm(request.POST,instance=hub)
         if filledform.is_valid():
+            u = User.objects.get(username=username)
+            u.set_password(filledform.cleaned_data['password'])
             filledform.save()
             return redirect('home')
         else:
@@ -203,19 +207,51 @@ def editHub(request,username):
         })
 
 @login_required(login_url="login/")
-def drequest(request):
+def prequest(request):
     superuser = request.user.is_superuser
     username = request.user.get_username()
-    return render(request, "datlien/drequest.html",{
-            'username':username,
-            'superuser':superuser,
+    hub = Hub.objects.get(username=username)
+    approval_req = Delivery.objects.filter(source=hub.id,is_approved=False)
+    pickup_req = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=False)
+    shippment_req = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=False)
+    transit_req = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=False)
+    out_for_delivery = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=False)
+    return render(request, "datlien/prequest.html",{
+        'username':username,
+        'superuser':superuser,
+        'approval_req': approval_req,
+        'pickup_req': pickup_req,
+        'shippment_req': shippment_req,
+        'transit_req':transit_req,
+        'out_for_delivery':out_for_delivery,
     })
 
 @login_required(login_url="login/")
-def crequest(request):
+def porders(request):
     superuser = request.user.is_superuser
     username = request.user.get_username()
-    return render(request, "datlien/crequest.html",{
+    hub = Hub.objects.get(username=username)
+    received_req = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=False)
+    out_for_delivery_req = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=False)
+    delivery_req = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=False)
+    return render(request, "datlien/porders.html",{
             'username':username,
             'superuser':superuser,
+            'received_req':received_req,
+            'out_for_delivery_req':out_for_delivery_req,
+            'delivery_req':delivery_req,
+    })
+
+@login_required(login_url="login/")
+def corders(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    hub = Hub.objects.get(username=username)
+    incoming_deliveries = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=True)
+    out_going_deliveries = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=True)
+    return render(request, "datlien/corders.html",{
+            'username':username,
+            'superuser':superuser,
+            'incoming_deliveries':incoming_deliveries,
+            'out_going_deliveries':out_going_deliveries,
     })

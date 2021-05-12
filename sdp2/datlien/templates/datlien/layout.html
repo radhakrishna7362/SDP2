@@ -33,10 +33,13 @@
               {% endif %}
               {% if not superuser %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'drequest' %}">Delivery Requests</a>
+                <a class="nav-link" href="{% url 'prequest' %}">Pending Requests</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'crequest' %}">Completed Requests</a>
+                <a class="nav-link" href="{% url 'porders' %}">Pending Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'corders' %}">Completed Orders</a>
               </li>
               {% endif %}
             </ul>

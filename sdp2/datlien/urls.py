@@ -13,6 +13,7 @@ urlpatterns = [
     path('addCentralHub/', views.addCentralHub, name='addCentralHub'),
     path('editCentralHub/<str:username>', views.editCentralHub, name='editCentralHub'),
     path('editHub/<str:username>', views.editHub, name='editHub'),
-    path('drequest', views.drequest, name='drequest'),
-    path('crequest', views.crequest, name='crequest'),
+    path('prequest/', views.prequest, name='prequest'),
+    path('porders/', views.porders, name='porders'),
+    path('corders/', views.corders, name='corders'),
 ]

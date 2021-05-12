@@ -1,0 +1,50 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+<div class="m-2">
+    Completed Orders
+</div>
+
+<div class="m-2">
+    Incoming Deliveries
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            {% for delivery in incoming_deliveries %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Delivered</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    Out Going Deliveries
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            {% for delivery in out_going_deliveries %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Delivered</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+<div class="m-2">
+    Pending Orders
+</div>
+
+<div class="m-2">
+    Received Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in received_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Transit</td>
+                <td><button>Accpet</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    Out for Delivery Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in out_for_delivery_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Received</td>
+                <td><button>Accpet</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    Delivery Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in delivery_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Out Of Delivery</td>
+                <td><button>Accpet</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

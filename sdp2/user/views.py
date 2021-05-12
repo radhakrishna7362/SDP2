@@ -65,7 +65,6 @@ def register_view(request):
             return redirect('userhome')
         else:
             form = SignUpForm()
-            username = request.user.get_username()
             return render(request, "user/register.html",{
                 'form':form,
                 'message':"Please Try Again."

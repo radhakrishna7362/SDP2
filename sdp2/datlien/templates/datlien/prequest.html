@@ -1,0 +1,123 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+<div class="m-2">
+    Pending Requests
+</div>
+<div class="m-2">
+    Approval Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in approval_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Pending</td>
+                <td><button>Accpet</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    PickUp Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in pickup_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Approved</td>
+                <td><button>Accpet</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    Shippment Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in shippment_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Picked</td>
+                <td><button>Accpet</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    Transit Requests
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for delivery in transit_req %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Shipped</td>
+                <td><button>Accept</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    Out For Delivery
+    <table>
+        <thead>
+            <th>User</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            {% for delivery in out_for_delivery %}
+            <tr>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>Out for Delivery</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
