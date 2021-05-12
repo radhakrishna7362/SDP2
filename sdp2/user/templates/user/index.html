@@ -36,4 +36,46 @@
         </div>
     </div>
 </div>
+
+<div class="mt-2">
+    History
+</div>
+<div class="mt-2">
+    <table>
+        <thead>
+            <th>Order Id</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            {% for delivery in history %}
+            <tr>
+                <td>{{delivery.id}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>
+                    {% if not delivery.is_approved %}
+                        Pending
+                    {% elif not delivery.is_picked %}
+                        Approved
+                    {% elif not delivery.is_shipped %}
+                        Picked
+                    {% elif not delivery.is_transit %}
+                        Shipped
+                    {% elif not delivery.is_received %}
+                        On its Way to Destination
+                    {% elif not delivery.out_for_delivery %}
+                        Received
+                    {% elif not delivery.is_delivered %}
+                        Out for Delivery
+                    {% else %}
+                        Delivered
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

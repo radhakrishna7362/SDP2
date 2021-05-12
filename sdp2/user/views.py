@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticate_user
+from .models import Delivery
 
 # Create your views here.
 @login_required(login_url='login/')
@@ -30,9 +31,11 @@ def home(request):
             "destination":None,
         }
         form = DeliveryForm(initial=initial_dict)
+        history = Delivery.objects.filter(user=username)
         return render(request, "user/index.html",{
             'username':username,
-            'form':form
+            'form':form,
+            'history':history,
         })
 
 @unauthenticate_user

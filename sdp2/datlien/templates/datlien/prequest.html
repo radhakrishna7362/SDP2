@@ -20,7 +20,7 @@
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
                 <td>Pending</td>
-                <td><button>Accpet</button></td>
+                <td><a href="{% url 'approve' delivery.id %}">Accpet</button></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -44,7 +44,7 @@
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
                 <td>Approved</td>
-                <td><button>Accpet</button></td>
+                <td><a href="{% url 'pick' delivery.id %}">Accpet</a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -68,7 +68,7 @@
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
                 <td>Picked</td>
-                <td><button>Accpet</button></td>
+                <td><a href="{% url 'ship' delivery.id %}">Accpet</a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -92,7 +92,7 @@
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
                 <td>Shipped</td>
-                <td><button>Accept</button></td>
+                <td><a href="{% url 'transit' delivery.id %}">Accept</a></td>
             </tr>
             {% endfor %}
         </tbody>

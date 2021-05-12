@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from django.contrib.auth.models import User
+from user.forms import DeliveryForm
 
 # Create your views here.
 @login_required(login_url="login/")
@@ -255,3 +256,38 @@ def corders(request):
             'incoming_deliveries':incoming_deliveries,
             'out_going_deliveries':out_going_deliveries,
     })
+
+@login_required(login_url="login/")
+def approve(request,id):
+    Delivery.objects.filter(pk=id).update(is_approved = True)
+    return redirect('prequest')
+
+@login_required(login_url="login/")
+def pick(request,id):
+    Delivery.objects.filter(pk=id).update(is_picked = True)
+    return redirect('prequest')
+
+@login_required(login_url="login/")
+def ship(request,id):
+    Delivery.objects.filter(pk=id).update(is_shipped = True)
+    return redirect('prequest')
+
+@login_required(login_url="login/")
+def transit(request,id):
+    Delivery.objects.filter(pk=id).update(is_transit = True)
+    return redirect('prequest')
+
+@login_required(login_url="login/")
+def receive(request,id):
+    Delivery.objects.filter(pk=id).update(is_received = True)
+    return redirect('porders')
+
+@login_required(login_url="login/")
+def out_for_delivery(request,id):
+    Delivery.objects.filter(pk=id).update(out_for_delivery = True)
+    return redirect('porders')
+
+@login_required(login_url="login/")
+def deliver(request,id):
+    Delivery.objects.filter(pk=id).update(is_delivered = True)
+    return redirect('porders')
