@@ -11,17 +11,40 @@ from .models import Delivery
 def home(request):
     if request.method == "POST":
         filledform = DeliveryForm(request.POST)
+        if request.POST['source']==request.POST['destination']:
+            message = "Source & Destination Should not same"
+            username = request.user.get_username()
+            initial_dict = {
+                "user" : username,
+                "source" : None,
+                "destination":None,
+            }
+            form = DeliveryForm(initial=initial_dict)
+            history = Delivery.objects.filter(user=username)
+            return render(request, "user/index.html",{
+                'username':username,
+                'form':form,
+                'history':history,
+                'message':message
+            })
         if filledform.is_valid():
             filledform.save()
             return redirect('userhome')
         else:
-            form = DeliveryForm()
             message = "Try Again"
             username = request.user.get_username()
-            return render(request,"user/index.html",{
+            initial_dict = {
+                "user" : username,
+                "source" : None,
+                "destination":None,
+            }
+            form = DeliveryForm(initial=initial_dict)
+            history = Delivery.objects.filter(user=username)
+            return render(request, "user/index.html",{
                 'username':username,
                 'form':form,
-                'message': message,
+                'history':history,
+                'message':message
             })
     else:
         username = request.user.get_username()
