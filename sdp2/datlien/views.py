@@ -26,8 +26,16 @@ def login_view(request):
         password = request.POST["password"]
         user = authenticate(request, username=username , password=password)
         if user is not None:
-            login(request, user)
-            return redirect(request.GET.get('next'))
+            if user.is_staff:
+                login(request, user)
+                return redirect(request.GET.get('next'))
+            else:
+                form = LoginForm()
+                message = "Access Denied"
+                return render(request,"datlien/login.html",{
+                    'form':form,
+                    'message': message
+                })                
         else:
             form = LoginForm()
             message = "Invalid Login"

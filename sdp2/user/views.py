@@ -68,6 +68,13 @@ def login_view(request):
         password = request.POST["password"]
         user = authenticate(request, username=username , password=password)
         if user is not None:
+            if user.is_staff:
+                form = LoginForm()
+                message = "Access Denied"
+                return render(request,"user/login.html",{
+                    'form':form,
+                    'message': message
+                })
             login(request, user)
             return redirect(request.GET.get('next'))
         else:
