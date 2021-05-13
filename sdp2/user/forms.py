@@ -13,7 +13,6 @@ class SignUpForm(UserCreationForm):
         fields = ['username','email','first_name','last_name']
 
 class DeliveryForm(forms.ModelForm):
-    user=forms.CharField(disabled=True)
     class Meta:
         model = Delivery
         fields = ['user', 'source', 'destination']
