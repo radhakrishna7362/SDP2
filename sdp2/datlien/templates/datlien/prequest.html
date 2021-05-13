@@ -1,17 +1,15 @@
 {% extends "datlien/layout.html" %}
+{% load widget_tweaks %}
 {% block 'body' %}
 <div class="m-2">
-    Pending Requests
-</div>
-<div class="m-2">
-    Approval Requests
-    <table>
+    <h3 class="text-center">Approval Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in approval_req %}
@@ -28,14 +26,14 @@
 </div>
 
 <div class="m-2">
-    PickUp Requests
-    <table>
+    <h3 class="text-center">PickUp Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in pickup_req %}
@@ -52,14 +50,14 @@
 </div>
 
 <div class="m-2">
-    Shippment Requests
-    <table>
+    <h3 class="text-center">Shippment Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in shippment_req %}
@@ -76,14 +74,14 @@
 </div>
 
 <div class="m-2">
-    Transit Requests
-    <table>
+    <h3 class="text-center">Transit Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in transit_req %}
@@ -100,13 +98,13 @@
 </div>
 
 <div class="m-2">
-    Out For Delivery
-    <table>
+    <h3 class="text-center">Out For Delivery</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
         </thead>
         <tbody>
             {% for delivery in out_for_delivery %}

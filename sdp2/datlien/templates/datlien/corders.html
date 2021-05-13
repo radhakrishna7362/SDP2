@@ -1,17 +1,16 @@
 {% extends "datlien/layout.html" %}
+{% load widget_tweaks %}
 {% block 'body' %}
 <div class="m-2">
-    Completed Orders
-</div>
-
-<div class="m-2">
-    Incoming Deliveries
-    <table>
+    <h3 class="text-center">Incoming Deliveries</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Source</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Status</th>
+            </tr>
         </thead>
         <tbody>
             {% for delivery in incoming_deliveries %}
@@ -27,13 +26,15 @@
 </div>
 
 <div class="m-2">
-    Out Going Deliveries
-    <table>
+    <h3 class="text-center">OutGoing Deliveries</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Source</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Status</th>
+            </tr>
         </thead>
         <tbody>
             {% for delivery in out_going_deliveries %}

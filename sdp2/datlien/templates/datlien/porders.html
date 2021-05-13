@@ -1,18 +1,15 @@
 {% extends "datlien/layout.html" %}
+{% load widget_tweaks %}
 {% block 'body' %}
 <div class="m-2">
-    Pending Orders
-</div>
-
-<div class="m-2">
-    Received Requests
-    <table>
+    <h3 class="text-center">Received Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in received_req %}
@@ -29,14 +26,14 @@
 </div>
 
 <div class="m-2">
-    Out for Delivery Requests
-    <table>
+    <h3 class="text-center">Out for Delivery Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in out_for_delivery_req %}
@@ -53,14 +50,14 @@
 </div>
 
 <div class="m-2">
-    Delivery Requests
-    <table>
+    <h3 class="text-center">Delivery Requests</h3>
+    <table class="table table-striped">
         <thead>
-            <th>User</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
         </thead>
         <tbody>
             {% for delivery in delivery_req %}
