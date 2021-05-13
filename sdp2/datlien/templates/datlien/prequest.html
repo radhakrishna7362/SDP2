@@ -5,6 +5,7 @@
     <h3 class="text-center">Approval Requests</h3>
     <table class="table table-striped">
         <thead>
+            <th scope="col">Order Id</th>
             <th scope="col">User</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
@@ -14,6 +15,7 @@
         <tbody>
             {% for delivery in approval_req %}
             <tr>
+                <td>{{delivery.id}}</td>
                 <td>{{delivery.user}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
@@ -29,6 +31,7 @@
     <h3 class="text-center">PickUp Requests</h3>
     <table class="table table-striped">
         <thead>
+            <th scope="col">Order Id</th>
             <th scope="col">User</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
@@ -38,6 +41,7 @@
         <tbody>
             {% for delivery in pickup_req %}
             <tr>
+                <td>{{delivery.id}}</td>
                 <td>{{delivery.user}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
@@ -53,6 +57,7 @@
     <h3 class="text-center">Shippment Requests</h3>
     <table class="table table-striped">
         <thead>
+            <th scope="col">Order Id</th>
             <th scope="col">User</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
@@ -62,6 +67,7 @@
         <tbody>
             {% for delivery in shippment_req %}
             <tr>
+                <td>{{delivery.id}}</td>
                 <td>{{delivery.user}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
@@ -77,6 +83,7 @@
     <h3 class="text-center">Transit Requests</h3>
     <table class="table table-striped">
         <thead>
+            <th scope="col">Order Id</th>
             <th scope="col">User</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
@@ -86,6 +93,7 @@
         <tbody>
             {% for delivery in transit_req %}
             <tr>
+                <td>{{delivery.id}}</td>
                 <td>{{delivery.user}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
@@ -98,21 +106,31 @@
 </div>
 
 <div class="m-2">
-    <h3 class="text-center">Out For Delivery</h3>
-    <table class="table table-striped">
+    <h3 class="text-center">Order Status</h3>
+    <table class="table table-stripped">
         <thead>
-            <th scope="col">User</th>
+            <th scope="col">Order Id</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
             <th scope="col">Status</th>
         </thead>
         <tbody>
-            {% for delivery in out_for_delivery %}
+            {% for delivery in history %}
             <tr>
-                <td>{{delivery.user}}</td>
+                <td>{{delivery.id}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
-                <td>Out for Delivery</td>
+                <td>
+                    {% if not delivery.is_received %}
+                        On its Way to Destination
+                    {% elif not delivery.out_for_delivery %}
+                        Received
+                    {% elif not delivery.is_delivered %}
+                        Out for Delivery
+                    {% else %}
+                        Delivered
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
