@@ -216,7 +216,7 @@ def prequest(request):
     pickup_req = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=False)
     shippment_req = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=False)
     transit_req = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=False)
-    out_for_delivery = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=False)
+    history = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True)
     return render(request, "datlien/prequest.html",{
         'username':username,
         'superuser':superuser,
@@ -224,7 +224,7 @@ def prequest(request):
         'pickup_req': pickup_req,
         'shippment_req': shippment_req,
         'transit_req':transit_req,
-        'out_for_delivery':out_for_delivery,
+        'history':history,
     })
 
 @login_required(login_url="login/")

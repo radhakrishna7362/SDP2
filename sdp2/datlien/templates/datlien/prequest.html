@@ -106,23 +106,31 @@
 </div>
 
 <div class="m-2">
-    <h3 class="text-center">Out For Delivery</h3>
-    <table class="table table-striped">
+    <h3 class="text-center">Order Status</h3>
+    <table class="table table-stripped">
         <thead>
             <th scope="col">Order Id</th>
-            <th scope="col">User</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
             <th scope="col">Status</th>
         </thead>
         <tbody>
-            {% for delivery in out_for_delivery %}
+            {% for delivery in history %}
             <tr>
                 <td>{{delivery.id}}</td>
-                <td>{{delivery.user}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>
-                <td>Out for Delivery</td>
+                <td>
+                    {% if not delivery.is_received %}
+                        On its Way to Destination
+                    {% elif not delivery.out_for_delivery %}
+                        Received
+                    {% elif not delivery.is_delivered %}
+                        Out for Delivery
+                    {% else %}
+                        Delivered
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
