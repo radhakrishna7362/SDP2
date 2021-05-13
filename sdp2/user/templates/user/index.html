@@ -37,16 +37,14 @@
     </div>
 </div>
 
-<div class="mt-2">
-    History
-</div>
-<div class="mt-2">
-    <table>
+<div class="m-2">
+    <h3 class="text-center">History</h3>
+    <table class="table table-stripped">
         <thead>
-            <th>Order Id</th>
-            <th>Source</th>
-            <th>Destination</th>
-            <th>Status</th>
+            <th scope="col">Order Id</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
         </thead>
         <tbody>
             {% for delivery in history %}
