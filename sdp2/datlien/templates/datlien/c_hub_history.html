@@ -1,0 +1,79 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+
+{% load widget_tweaks %}
+
+<div class="m-2">
+    <h3 class="text-center">Order History Of Central Hub {{c_hub.city}}</h3>
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">Order Id</th>
+            <th scope="col">User</th>
+            <th scope="col">Source</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Status</th>
+        </thead>
+        <tbody>
+            {% for delivery in orders_history %}
+            <tr>
+                <td>{{delivery.id}}</td>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>
+                    {% if not delivery.is_approved %}
+                        Pending
+                    {% elif not delivery.is_picked %}
+                        Approved
+                    {% elif not delivery.is_shipped %}
+                        Picked
+                    {% elif not delivery.is_transit %}
+                        Shipped
+                    {% elif not delivery.is_received %}
+                        On its Way to Destination
+                    {% elif not delivery.out_for_delivery %}
+                        Received
+                    {% elif not delivery.is_delivered %}
+                        Out for Delivery
+                    {% else %}
+                        Delivered
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    <h3 class="text-center">Hubs of {{c_hub.city}}</h3>
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">Established On</th>
+            <th scope="col">Hub Id</th>
+            <th scope="col">City</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+            <th scope="col">History</th>
+        </thead>
+        <tbody>
+            {% for hub in hubs %}
+            <tr>
+                <td>{{hub.date}}</td>
+                <td>{{hub.id}}</td>
+                <td>{{hub.city}}</td>
+                <td>{{hub.username}}</td>
+                <td>{{hub.email}}</td>
+                <td>
+                    <a href="{% url 'editHub' hub.username %}"> <i class="fa fa-edit"></i> </a>
+                </td>
+                <td>
+                    <a href="{% url 'hub_history' hub.id %}"> <i class="fas fa-eye"></i> </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -30,8 +30,13 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'viewCentralHubs' %}">Central Hubs</a>
               </li>
-              {% endif %}
-              {% if not superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users' %}">Users</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'orders_history' %}">Order History</a>
+              </li>
+              {% else %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'prequest' %}">Pending Requests</a>
               </li>
@@ -47,7 +52,7 @@
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if username %}
                   <li class="nav-item">
-                    <a class="nav-link" href="">{{username}}</a>
+                    <a class="nav-link" href="{% url 'profile' %}">{{username}}</a>
                   </li>
                   <li class="nav-item">
                     <a class="btn btn-outline-danger" href="{% url 'logout' %}">Logout</a>

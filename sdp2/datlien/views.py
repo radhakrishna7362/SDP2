@@ -1,22 +1,34 @@
 from user.models import Delivery
-from django.shortcuts import render,HttpResponse, redirect
-from .forms import LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm
+from django.shortcuts import render, redirect
+from .forms import Profile,EditProfile,LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm
 from .models import CentralHub, Hub
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from django.contrib.auth.models import User
-from user.forms import DeliveryForm
 
 # Create your views here.
 @login_required(login_url="login/")
 def home(request):
     username = request.user.get_username()
     superuser = request.user.is_superuser
+    is_c_hub = False
+    hubs = None
+    c_hub = None
+    if not superuser:
+        try:
+            c_hub = CentralHub.objects.get(username=username)
+            if c_hub is not None:
+                is_c_hub=True
+                hubs = Hub.objects.filter(central_hub=c_hub.id)
+        except:
+            pass
     return render(request, "datlien/index.html",{
         'username':username,
         'superuser':superuser,
+        'is_c_hub':is_c_hub,
+        'c_hub':c_hub,
+        'hubs':hubs
     })
 
 @unauthenticated_user
@@ -89,6 +101,9 @@ def addCentralHub(request):
         if filledform.is_valid():
             filledform.save()          
             User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
+            c_hub = CentralHub.objects.filter(username=filledform.cleaned_data['username'])
+            hub = Hub(central_hub=c_hub[0],city=c_hub[0].city,username=c_hub[0].username,password=c_hub[0].password,email=c_hub[0].email,address=c_hub[0].address)
+            hub.save()
             return redirect('home')
         else:
             form = CentralHubForm()
@@ -244,11 +259,11 @@ def porders(request):
     out_for_delivery_req = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=False)
     delivery_req = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=False)
     return render(request, "datlien/porders.html",{
-            'username':username,
-            'superuser':superuser,
-            'received_req':received_req,
-            'out_for_delivery_req':out_for_delivery_req,
-            'delivery_req':delivery_req,
+        'username':username,
+        'superuser':superuser,
+        'received_req':received_req,
+        'out_for_delivery_req':out_for_delivery_req,
+        'delivery_req':delivery_req,
     })
 
 @login_required(login_url="login/")
@@ -259,10 +274,10 @@ def corders(request):
     incoming_deliveries = Delivery.objects.filter(destination=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=True)
     out_going_deliveries = Delivery.objects.filter(source=hub.id,is_approved=True,is_picked=True,is_shipped=True,is_transit=True,is_received=True,out_for_delivery=True,is_delivered=True)
     return render(request, "datlien/corders.html",{
-            'username':username,
-            'superuser':superuser,
-            'incoming_deliveries':incoming_deliveries,
-            'out_going_deliveries':out_going_deliveries,
+        'username':username,
+        'superuser':superuser,
+        'incoming_deliveries':incoming_deliveries,
+        'out_going_deliveries':out_going_deliveries,
     })
 
 @login_required(login_url="login/")
@@ -299,3 +314,131 @@ def out_for_delivery(request,id):
 def deliver(request,id):
     Delivery.objects.filter(pk=id).update(is_delivered = True)
     return redirect('porders')
+
+@login_required(login_url="login/")
+def profile(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    initial_dict = {
+        "first_name":request.user.first_name,
+        "last_name":request.user.last_name,
+        "email":request.user.email,
+        "username":request.user.username,
+        "password":None
+    }
+    form = Profile(initial=initial_dict)
+    return render(request, "datlien/profile.html",{
+        'username':username,
+        'superuser':superuser,
+        'form':form,
+    })
+
+@login_required(login_url="/login")
+def editprofile(request):
+    if request.method == "POST":
+        username = request.user.get_username()
+        user = User.objects.get(username=username)
+        filledform = EditProfile(request.POST, instance=user)
+        if filledform.is_valid():
+            filledform.save()
+            u = User.objects.get(username=username)
+            u.set_password(filledform.cleaned_data['password'])
+            return redirect('profile')
+        else:
+            superuser = request.user.is_superuser
+            username = request.user.get_username()
+            message="Try again"
+            initial_dict = {
+                "first_name":request.user.first_name,
+                "last_name":request.user.last_name,
+                "email":request.user.email,
+                "username":request.user.username,
+                "password":request.user.password
+            }
+            form = EditProfile(initial=initial_dict)
+            return render(request, "datlien/editprofile.html",{
+                'username':username,
+                'superuser':superuser,
+                'form':form,
+                'message':message,
+            })
+    else:
+        superuser = request.user.is_superuser
+        username = request.user.get_username()
+        initial_dict = {
+            "first_name":request.user.first_name,
+            "last_name":request.user.last_name,
+            "email":request.user.email,
+            "username":request.user.username,
+            "password":request.user.password
+        }
+        form = EditProfile(initial=initial_dict)
+        return render(request, "datlien/editprofile.html",{
+            'username':username,
+            'superuser':superuser,
+            'form':form,
+        })
+
+@login_required(login_url="login/")
+def users(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    users= User.objects.filter(is_staff=False)
+    return render(request, "datlien/users.html",{
+        'username':username,
+        'superuser':superuser,
+        'users':users,
+    })
+
+@login_required(login_url="login/")
+def orders_history(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    orders_history= Delivery.objects.all()
+    return render(request, "datlien/orders_history.html",{
+        'username':username,
+        'superuser':superuser,
+        'orders_history':orders_history,
+    })
+
+@login_required(login_url="login/")
+def history(request,id):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    user = User.objects.get(pk=id)
+    orders_history= Delivery.objects.filter(user=user.username)
+    return render(request, "datlien/history.html",{
+        'username':username,
+        'superuser':superuser,
+        'orders_history':orders_history,
+        'user':user.username,
+    })
+
+@login_required(login_url="login/")
+def c_hub_history(request,id):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    c_hub = CentralHub.objects.get(pk=id)
+    hub = Hub.objects.filter(username=c_hub.username)
+    hubs = Hub.objects.filter(central_hub=c_hub)
+    orders_history= Delivery.objects.filter(source=hub[0].id)
+    return render(request, "datlien/c_hub_history.html",{
+        'username':username,
+        'superuser':superuser,
+        'orders_history':orders_history,
+        'c_hub':c_hub,
+        'hubs':hubs,
+    })
+
+@login_required(login_url="login/")
+def hub_history(request,id):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    hub = Hub.objects.get(pk=id)
+    orders_history= Delivery.objects.filter(source=hub.id)
+    return render(request, "datlien/hub_history.html",{
+        'username':username,
+        'superuser':superuser,
+        'orders_history':orders_history,
+        'hub':hub,
+    })
