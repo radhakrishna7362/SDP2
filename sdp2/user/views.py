@@ -10,6 +10,8 @@ from .models import Delivery
 @login_required(login_url='login/')
 def home(request):
     if request.method == "POST":
+        request.POST._mutable = True
+        request.POST['user']=request.user.get_username()
         filledform = DeliveryForm(request.POST)
         if request.POST['source']==request.POST['destination']:
             message = "Source & Destination Should not same"

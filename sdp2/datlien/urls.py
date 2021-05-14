@@ -23,4 +23,11 @@ urlpatterns = [
     path('receive/<int:id>', views.receive, name='receive'),
     path('out_for_delivery/<int:id>', views.out_for_delivery, name='out_for_delivery'),
     path('deliver/<int:id>', views.deliver, name='deliver'),
+    path('profile/', views.profile, name="profile"),
+    path('editprofile/', views.editprofile, name="editprofile"),
+    path('users/', views.users, name="users"),
+    path('orders_history/', views.orders_history, name="orders_history"),
+    path('history/<int:id>', views.history, name="history"),
+    path('c_hub_history/<int:id>', views.c_hub_history, name="c_hub_history"),
+    path('hub_history/<int:id>', views.hub_history, name="hub_history"),
 ]

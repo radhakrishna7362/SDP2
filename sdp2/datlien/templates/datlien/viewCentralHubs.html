@@ -6,6 +6,11 @@
     <a class="btn btn-outline-success" href="{% url 'addCentralHub' %}"> <i class="fa fa-plus"></i> <span class="h6">Central Hub</span></a>
 </div>
 <div class="m-2">
+    {% if central_hubs %}
+        <b>Total Cental Hubs:</b> {{central_hubs.count}}
+    {% endif %}
+</div>
+<!-- <div class="m-2">
     {% for central_hub in central_hubs %}
     <div class="col-3">
         <div class="card">
@@ -22,5 +27,39 @@
         </div>
     </div>
     {% endfor %}
+</div> -->
+
+<div class="m-2">
+    <h3 class="text-center">Central Hub</h3>
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">Established On</th>
+            <th scope="col">Central Hub Id</th>
+            <th scope="col">State</th>
+            <th scope="col">City</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+            <th scope="col">History</th>
+        </thead>
+        <tbody>
+            {% for central_hub in central_hubs %}
+            <tr>
+                <td>{{central_hub.date}}</td>
+                <td>{{central_hub.id}}</td>
+                <td>{{central_hub.state}}</td>
+                <td>{{central_hub.city}}</td>
+                <td>{{central_hub.username}}</td>
+                <td>{{central_hub.email}}</td>
+                <td>
+                    <a href="{% url 'editCentralHub' central_hub.username %}"> <i class="fa fa-edit"></i> </a>
+                </td>
+                <td>
+                    <a href="{% url 'c_hub_history' central_hub.id %}"> <i class="fas fa-eye"></i> </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
