@@ -1,9 +1,10 @@
 from django.db import models
 from datlien.models import Hub
 from datetime import datetime
+from django_random_id_model import RandomIDModel
 
 # Create your models here.
-class Delivery(models.Model):
+class Delivery(RandomIDModel):
     user = models.CharField(max_length=100)
     source = models.ForeignKey(Hub,on_delete=models.CASCADE,related_name='+')
     destination = models.ForeignKey(Hub,on_delete=models.CASCADE,related_name='+')
