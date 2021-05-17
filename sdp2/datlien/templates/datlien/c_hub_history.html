@@ -46,6 +46,10 @@
 </div>
 
 <div class="m-2">
+    <a class="btn btn-outline-success" href="{% url 'addHub' %}"> <i class="fa fa-plus"></i> <span class="h6">Hub</span></a>
+</div>
+
+<div class="m-2">
     <h3 class="text-center">Hubs of {{c_hub.city}}</h3>
     <table class="table table-striped">
         <thead>
@@ -60,7 +64,7 @@
         <tbody>
             {% for hub in hubs %}
             <tr>
-                <td>{{hub.date}}</td>
+                <td>{{hub.created_on}}</td>
                 <td>{{hub.id}}</td>
                 <td>{{hub.city}}</td>
                 <td>{{hub.username}}</td>

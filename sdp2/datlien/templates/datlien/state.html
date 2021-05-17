@@ -3,6 +3,53 @@
 
 {% load widget_tweaks %}
 <div class="m-2">
+    <a class="btn btn-outline-success" href="{% url 'addCity' state.id %}"> <i class="fa fa-plus"></i> <span class="h6">City</span></a>
+</div>
+<div class="m-2">
+    {% if cities %}
+        <b>Total Cities:</b> {{cities.count}}
+    {% endif %}
+</div>
+<!-- <div class="m-2">
+    {% for central_hub in central_hubs %}
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                {{central_hub.city}}
+            </div>
+            <div class="card-content m-2">
+                <p>{{central_hub.state}}</p>
+                <p>{{central_hub.address}}</p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'editCentralHub' central_hub.username %}"> <i class="fa fa-edit"></i> </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div> -->
+
+<div class="m-2">
+    <h3 class="text-center">Cities</h3>
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">City Id</th>
+            <th scope="col">State</th>
+            <th scope="col">City</th>
+        </thead>
+        <tbody>
+            {% for city in cities %}
+            <tr>
+                <td>{{city.id}}</td>
+                <td>{{city.state.name}}</td>
+                <td>{{city.city}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
     <a class="btn btn-outline-success" href="{% url 'addCentralHub' %}"> <i class="fa fa-plus"></i> <span class="h6">Central Hub</span></a>
 </div>
 <div class="m-2">
@@ -45,7 +92,7 @@
         <tbody>
             {% for central_hub in central_hubs %}
             <tr>
-                <td>{{central_hub.created_on}}</td>
+                <td>{{central_hub.date}}</td>
                 <td>{{central_hub.id}}</td>
                 <td>{{central_hub.state}}</td>
                 <td>{{central_hub.city}}</td>
@@ -61,5 +108,9 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<div class="m-2">
+    <a class="btn btn-outline-primary" href="{% url 'viewStates' %}"> <i class="fa fa-arrow-left"></i> Back</a>
 </div>
 {% endblock %}

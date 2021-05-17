@@ -15,6 +15,7 @@ class Delivery(RandomIDModel):
     is_received = models.BooleanField(default=False)
     out_for_delivery = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
-    date = models.DateTimeField(default=datetime.now, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"{self.user} - {self.source} - {self.destination}"

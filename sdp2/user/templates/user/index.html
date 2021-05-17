@@ -41,6 +41,7 @@
     <h3 class="text-center">History</h3>
     <table class="table table-striped">
         <thead>
+            <th scope="col">Placed on</th>
             <th scope="col">Order Id</th>
             <th scope="col">Source</th>
             <th scope="col">Destination</th>
@@ -49,6 +50,7 @@
         <tbody>
             {% for delivery in history %}
             <tr>
+                <td>{{delivery.created_on}}</td>
                 <td>{{delivery.id}}</td>
                 <td>{{delivery.source}}</td>
                 <td>{{delivery.destination}}</td>

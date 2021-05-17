@@ -1,30 +1,54 @@
 from django.db import models
-from datetime import datetime
+from django.contrib.auth.models import User
+from django_random_id_model import RandomIDModel
 
 # Create your models here.
-class State(models.Model):
+class State(RandomIDModel):
     name = models.CharField(max_length=50)
     def __str__(self):
         return self.name
 
-class CentralHub(models.Model):
+class City(RandomIDModel):
     state = models.ForeignKey(State,on_delete=models.CASCADE,related_name='+')
     city = models.CharField(max_length=20)
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
-    email = models.EmailField()
-    address = models.CharField(max_length=100)
-    date = models.DateTimeField(default=datetime.now, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"{self.city} - {self.state}"
 
-class Hub(models.Model):
-    central_hub = models.ForeignKey(CentralHub,on_delete=models.CASCADE,related_name='+')
-    city = models.CharField(max_length=100)
+class CentralHub(RandomIDModel):
+    state = models.ForeignKey(State,on_delete=models.CASCADE,related_name='+')
+    city = models.ForeignKey(City,on_delete=models.CASCADE,related_name='+')
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
     email = models.EmailField()
     address = models.CharField(max_length=100)
-    date = models.DateTimeField(default=datetime.now, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return self.city
+        return f"{self.city.city} - {self.state}"
+
+class Hub(RandomIDModel):
+    central_hub = models.ForeignKey(CentralHub,on_delete=models.CASCADE,related_name='+')
+    city = models.ForeignKey(City,on_delete=models.CASCADE,related_name='+')
+    username = models.CharField(max_length=20)
+    password = models.CharField(max_length=20)
+    email = models.EmailField()
+    address = models.CharField(max_length=100)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.city.city
+
+class Account(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='+')
+    role_choices = [
+        ('1','SUPER USER'),
+        ('2','CENTRAL HUB'),
+        ('3','HUB'),
+        ('4','DELIVERY MANAGER'),
+        ('5','DELIVERY AGENT')
+    ]
+    role=models.CharField(max_length=1,choices=role_choices)
+    def __str__(self):
+        return self.user.get_username()

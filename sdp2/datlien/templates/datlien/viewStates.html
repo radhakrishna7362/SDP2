@@ -1,0 +1,50 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+
+{% load widget_tweaks %}
+<div class="m-2">
+    {% if states %}
+        <b>Total States:</b> {{states.count}}
+    {% endif %}
+</div>
+<!-- <div class="m-2">
+    {% for central_hub in central_hubs %}
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                {{central_hub.city}}
+            </div>
+            <div class="card-content m-2">
+                <p>{{central_hub.state}}</p>
+                <p>{{central_hub.address}}</p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'editCentralHub' central_hub.username %}"> <i class="fa fa-edit"></i> </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div> -->
+
+<div class="m-2">
+    <h3 class="text-center">States</h3>
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">State Id</th>
+            <th scope="col">State</th>
+            <th scope="col">Actions</th>
+        </thead>
+        <tbody>
+            {% for state in states %}
+            <tr>
+                <td>{{state.id}}</td>
+                <td>{{state.name}}</td>
+                <td>
+                    <a href="{% url 'state' state.id %}"> <i class="fas fa-eye"></i> </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,8 +1,5 @@
 from django import forms
-from django.contrib.auth import models
-from django.db.models.fields import CharField
-from django.forms import fields
-from .models import Hub,CentralHub
+from .models import City, Hub,CentralHub
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
@@ -51,3 +48,9 @@ class EditProfile(UserChangeForm):
     class Meta:
         model = User
         fields = ['username', 'email']
+
+class CityForm(forms.ModelForm):
+    # state = forms.CharField(disabled=True)
+    class Meta:
+        model = City
+        fields = ['state','city']

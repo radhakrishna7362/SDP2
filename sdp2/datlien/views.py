@@ -1,7 +1,7 @@
 from user.models import Delivery
 from django.shortcuts import render, redirect
-from .forms import Profile,EditProfile,LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm
-from .models import CentralHub, Hub
+from .forms import Profile,EditProfile,LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm,CityForm
+from .models import CentralHub, Hub, State, City, Account
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
@@ -13,8 +13,11 @@ def home(request):
     username = request.user.get_username()
     superuser = request.user.is_superuser
     is_c_hub = False
+    is_hub = False
     hubs = None
     c_hub = None
+    hub =None
+    history = None
     if not superuser:
         try:
             c_hub = CentralHub.objects.get(username=username)
@@ -22,13 +25,18 @@ def home(request):
                 is_c_hub=True
                 hubs = Hub.objects.filter(central_hub=c_hub.id)
         except:
-            pass
+            is_hub=True
+            hub = Hub.objects.get(username=username)
+            history = Delivery.objects.filter(source=hub.id)
     return render(request, "datlien/index.html",{
         'username':username,
         'superuser':superuser,
         'is_c_hub':is_c_hub,
         'c_hub':c_hub,
-        'hubs':hubs
+        'hubs':hubs,
+        'is_hub':is_hub,
+        'hub':hub,
+        'history':history
     })
 
 @unauthenticated_user
@@ -47,7 +55,7 @@ def login_view(request):
                 return render(request,"datlien/login.html",{
                     'form':form,
                     'message': message
-                })                
+                })
         else:
             form = LoginForm()
             message = "Invalid Login"
@@ -69,7 +77,6 @@ def register_view(request):
             return redirect('home')
         else:
             form = SignUpForm()
-            username = request.user.get_username()
             return render(request, "datlien/register.html",{
                 'form':form,
                 'message':"Please Try Again."
@@ -101,9 +108,13 @@ def addCentralHub(request):
         if filledform.is_valid():
             filledform.save()          
             User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
+            u = User.objects.filter(username=filledform.cleaned_data['username'])
+            print(u)
             c_hub = CentralHub.objects.filter(username=filledform.cleaned_data['username'])
             hub = Hub(central_hub=c_hub[0],city=c_hub[0].city,username=c_hub[0].username,password=c_hub[0].password,email=c_hub[0].email,address=c_hub[0].address)
             hub.save()
+            profile = Account(user=u[0],role='2')
+            profile.save()
             return redirect('home')
         else:
             form = CentralHubForm()
@@ -176,6 +187,10 @@ def addHub(request):
         if filledform.is_valid():
             filledform.save()
             User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
+            u = User.objects.filter(username=filledform.cleaned_data['username'])
+            print(u)
+            profile = Account(user=u[0],role='3')
+            profile.save()
             return redirect('home')
         else:
             form = HubForm()
@@ -229,6 +244,65 @@ def editHub(request,username):
             'username':username,
             'superuser':superuser,
         })
+
+@login_required(login_url="login/")
+def viewStates(request):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    states = State.objects.all()
+    return render(request,"datlien/viewStates.html",{
+        "states":states,
+        'username':username,
+        'superuser':superuser,
+    })
+
+@login_required(login_url="login/")
+def state(request,id):
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    st = State.objects.get(pk=id)
+    cities = City.objects.filter(state=id)
+    central_hubs = CentralHub.objects.filter(state=id)
+    return render(request,"datlien/state.html",{
+        "cities":cities,
+        "state":st,
+        'username':username,
+        'superuser':superuser,
+        "central_hubs":central_hubs,
+    })
+
+@login_required(login_url="login/")
+def addCity(request,id):
+    if request.method == "POST":
+        filledform = CityForm(request.POST)
+        if filledform.is_valid():
+            filledform.save()
+            return redirect('state',id)
+        else:
+            st = State.objects.get(pk=id)
+            inital_dict={
+                "state":st.name,
+                "city":None
+            }
+            form = CityForm(initial=inital_dict)
+            return render(request,"datlien/addCity.html",{
+                "form":form,
+                "state":st
+            })
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    st = State.objects.get(pk=id)
+    inital_dict={
+        "state":st.id,
+        "city":None
+    }
+    form = CityForm(initial=inital_dict)
+    return render(request,"datlien/addCity.html",{
+        "form":form,
+        "state":st,
+        'username':username,
+        'superuser':superuser,
+    })
 
 @login_required(login_url="login/")
 def prequest(request):
