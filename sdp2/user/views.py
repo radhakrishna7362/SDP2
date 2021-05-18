@@ -15,7 +15,7 @@ def home(request):
         request.POST['user']=request.user.get_username()
         filledform = DeliveryForm(request.POST)
         if request.POST['source']==request.POST['destination']:
-            message = "Source & Destination Should not same"
+            message = "Source & Destination Shouldn't be the Same ❗"
             username = request.user.get_username()
             initial_dict = {
                 "user" : username,

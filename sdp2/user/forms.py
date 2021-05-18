@@ -14,6 +14,7 @@ class SignUpForm(UserCreationForm):
 
 class DeliveryForm(forms.ModelForm):
     user = forms.CharField(widget=forms.HiddenInput())
+    type = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'e.g, Electronics, Goods, Books, Pets ...'}))
     class Meta:
         model = Delivery
-        fields = ['user', 'source', 'destination']
+        fields = ['user', 'source', 'destination', 'weight', 'type', 'destination_person', 'destination_address', 'destination_contact']
