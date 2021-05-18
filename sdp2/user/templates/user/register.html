@@ -21,6 +21,11 @@ Sign Up
                 <b>{{ message }}</b>
             </div>
             {% endif %}
+            {% if successmessage %}
+            <div class="text-center form-label is-valid" style="font-size: medium;color: lightseagreen;">
+                <b>{{ successmessage }}</b>
+            </div>
+            {% endif %}
             {% for field in form %}
             <div class="mb-3">
                 <label class="form-label">{{ field.label_tag }}</label>
@@ -29,7 +34,7 @@ Sign Up
             {% endfor %}
             <div class="mb-2">
                 <label class="form-check">
-                <span class="form-label-description"><a href="{% url 'userlogin' %}">Sign In</a></span>
+                <span class="form-label-description"><a href="{% url 'userhome' %}">Sign In</a></span>
                 </label>
             </div>
             <div class="form-footer">

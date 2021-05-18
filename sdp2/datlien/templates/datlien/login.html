@@ -15,7 +15,7 @@ Sign In
       <form class="card card-md" method="POST">
           {% csrf_token %}
           <div class="card-body">
-            <h2 class="card-title text-center mb-4">Login to your account</h2>
+            <h2 class="card-title text-center mb-2">Login to your account</h2>
             {% if message %}
             <div class="text-center form-label invalid-feedback" style="font-size: medium;">
                 <b>{{ message }}</b>
