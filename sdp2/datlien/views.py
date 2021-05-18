@@ -1,11 +1,12 @@
 from user.models import Delivery, DeliveryAgent
 from django.shortcuts import render, redirect
 from .forms import DeliveryAgentForm, DeliveryBoyForm, Profile,EditProfile,LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm,CityForm
-from .models import CentralHub, DeliveryBoy, Hub, State, City, Account
+from .models import CentralHub, DeliveryBoy, Hub, State, City
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
 
 # Create your views here.
 @login_required(login_url="login/")
@@ -22,7 +23,6 @@ def home(request):
     is_deliveryboy = False
     p_orders=None
     c_orders=None
-    print(superuser)
     if not superuser:
         try:
             c_hub = CentralHub.objects.get(username=username)
@@ -132,10 +132,8 @@ def addCentralHub(request):
             u = User.objects.filter(username=filledform.cleaned_data['username'])
             print(u)
             c_hub = CentralHub.objects.filter(username=filledform.cleaned_data['username'])
-            hub = Hub(central_hub=c_hub[0],city=c_hub[0].city,username=c_hub[0].username,password=c_hub[0].password,email=c_hub[0].email,address=c_hub[0].address)
+            hub = Hub(central_hub=c_hub[0],city=c_hub[0].city,username=c_hub[0].username,password=c_hub[0].password,email=c_hub[0].email,address=c_hub[0].address,base_fare=c_hub[0].base_fare)
             hub.save()
-            profile = Account(user=u[0],role='2')
-            profile.save()
             return redirect('home')
         else:
             form = CentralHubForm()
@@ -164,8 +162,6 @@ def editCentralHub(request,username):
         central_hub = CentralHub.objects.get(username=username)
         filledform = EditCentralHubForm(request.POST,instance=central_hub)
         if filledform.is_valid():
-            u = User.objects.get(username=username)
-            u.set_password(filledform.cleaned_data['password'])
             filledform.save()
             return redirect('home')
         else:
@@ -210,8 +206,6 @@ def addHub(request):
             User.objects.create_user(filledform.cleaned_data['username'],filledform.cleaned_data['email'],filledform.cleaned_data['password'],is_staff=True)
             u = User.objects.filter(username=filledform.cleaned_data['username'])
             print(u)
-            profile = Account(user=u[0],role='3')
-            profile.save()
             return redirect('home')
         else:
             form = HubForm()
@@ -241,7 +235,6 @@ def editHub(request,username):
         filledform = EditHubForm(request.POST,instance=hub)
         if filledform.is_valid():
             u = User.objects.get(username=username)
-            u.set_password(filledform.cleaned_data['password'])
             filledform.save()
             return redirect('home')
         else:
@@ -397,26 +390,71 @@ def corders(request):
 @login_required(login_url="login/")
 def approve(request,id):
     Delivery.objects.filter(pk=id).update(is_approved = True)
+    delivery = Delivery.objects.get(pk=id)
+    user = User.objects.filter(username=delivery.user)
+    to_email = user[0].email
+    mail_subject = 'Your Delivery Request has been Approved'
+    message='Thanks for using our services. Your order has been approved and it will be Picked up soon.'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
     return redirect('prequest')
 
 @login_required(login_url="login/")
 def pick(request,id):
     Delivery.objects.filter(pk=id).update(is_picked = True)
+    delivery = Delivery.objects.get(pk=id)
+    user = User.objects.filter(username=delivery.user)
+    to_email = user[0].email
+    mail_subject = 'Your Package has been Picked'
+    message='Thanks for using our services. Your package will be shipped soon.'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
     return redirect('prequest')
 
 @login_required(login_url="login/")
 def ship(request,id):
     Delivery.objects.filter(pk=id).update(is_shipped = True)
+    delivery = Delivery.objects.get(pk=id)
+    user = User.objects.filter(username=delivery.user)
+    to_email = user[0].email
+    mail_subject = 'Your Package has been Shipped'
+    message='Thanks for using our services. Your package will be in transit soon.'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
     return redirect('prequest')
 
 @login_required(login_url="login/")
 def transit(request,id):
     Delivery.objects.filter(pk=id).update(is_transit = True)
+    delivery = Delivery.objects.get(pk=id)
+    user = User.objects.filter(username=delivery.user)
+    to_email = user[0].email
+    mail_subject = 'Your Package is On its Way Destination'
+    message='Thanks for using our services. You will receive a confirmation mail soon when it reaches the nearest Hub.'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
     return redirect('prequest')
 
 @login_required(login_url="login/")
 def receive(request,id):
     Delivery.objects.filter(pk=id).update(is_received = True)
+    delivery = Delivery.objects.get(pk=id)
+    user = User.objects.filter(username=delivery.user)
+    to_email = user[0].email
+    mail_subject = 'Your Package has arrived the nearest Hub'
+    message='Thanks for using our services. Soon, a Delivery Agent will be assigned to deliver your Package.'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
     return redirect('porders')
 
 @login_required(login_url="login/")
@@ -426,6 +464,15 @@ def out_for_delivery(request,id):
         if filledform.is_valid():
             Delivery.objects.filter(pk=id).update(is_assigned = True, out_for_delivery=True)
             filledform.save()
+            delivery = Delivery.objects.get(pk=id)
+            user = User.objects.filter(username=delivery.user)
+            to_email = user[0].email
+            mail_subject = 'Your Package is assigned to a Delivery Agent'
+            message='Thanks for using our services. Soon, Our Delivery Agent will get in touch with you and your Package will be delivered.'
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
             return redirect('porders')
     delivery = Delivery.objects.get(pk=id)
     initial_dict = {
@@ -443,6 +490,14 @@ def deliver(request,id):
     delivery_boy = DeliveryBoy.objects.get(username=username)
     Delivery.objects.filter(pk=id).update(is_delivered = True)
     DeliveryAgent.objects.filter(delivery=delivery,delivery_boy=delivery_boy).update(is_delivered = True)
+    user = User.objects.filter(username=delivery.user)
+    to_email = user[0].email
+    mail_subject = 'Congratulations 😉😎🎉'
+    message='Your Package is delivered. Hope you like our services.'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
     return redirect('home')
 
 @login_required(login_url="login/")

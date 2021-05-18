@@ -13,6 +13,7 @@ class Delivery(RandomIDModel):
     destination_person = models.CharField(max_length=100, null=True, verbose_name="Destination Person")
     destination_address = models.CharField(max_length=100, null=True, verbose_name="Destination Address")
     destination_contact = models.CharField(max_length=10, null=True, verbose_name="Destination Contact No.")
+    total_amount = models.IntegerField(default=0)
     is_approved = models.BooleanField(default=False)
     is_picked = models.BooleanField(default=False)
     is_shipped = models.BooleanField(default=False)

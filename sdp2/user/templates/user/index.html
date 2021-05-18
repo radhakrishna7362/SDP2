@@ -49,33 +49,51 @@
 
 <div class="container-fluid">
 <div class="row">
-  <div class="col-md-4 page page-center">
-    <div class="container-tight py-4">
-        <form class="card card-md" method="POST">
-            {% csrf_token %}
-            <div class="card-body">
-            <h2 class="card-title text-center mb-2" style="font-size: large;">Delivery</h2>
-            {% if message %}
-            <div class="text-center form-label invalid-feedback" style="font-size: medium;">
-                <b>{{ message }}</b>
-            </div>
-            {% endif %}
-            {% for field in form.visible_fields %}
-            <div class="mb-3">
-                <label class="form-label">{{ field.label_tag }}</label>
-                {% render_field field class="form-control" %}
-            </div>
-            {% endfor %}
-            <div class="form-footer">
-                <button type="submit" class="btn btn-primary w-100">Submit</button>
-            </div>
-            </div>
-        </form>
+  <div class="col-md-4 d-flex flex-column mt-3 mb-3">
+    <div class="d-flex justify-content-sm-center">
+        <div class="card text-dark col-md-auto">
+            <h4 class="card-header d-flex justify-content-sm-center">
+                Delivery
+            </h4>
+            <div class="card-body d-flex flex-column justify-content-sm-center">
+                {% if message %}
+                <div class="alert alert-danger" role="alert">
+                  <div class="d-flex">
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <div>
+                      <h4 class="alert-title">I'm so sorry for you &hellip;</h4>
+                      <div class="text-muted">{{ message }}</div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                <div class="d-flex">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% for field in form.visible_fields %}
+                        <div class="mb-3 row form-group {%if field.errors %}alert alert-danger{%endif%}">
+                            {{ field.errors }}
+                            {{ field.label_tag }}
+                            <div>
+                                {% render_field field class="form-control" %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-md">Submit</button>
+                        </div>
+                      </form>
+                  </div>
+              </div>
+              <div class="card-footer text-center">
+              </div>
+          </div>
+      </div>
     </div>
-  </div>
 
-
-  <div class="col-md-8 py-4">
+    <div class="col-md-8 mt-3 mb-3">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">History</h3>
@@ -88,6 +106,7 @@
                 <th>Order Id</th>
                 <th>Source</th>
                 <th>Destination</th>
+                <th>Total Amount</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -98,6 +117,7 @@
                   <td>{{delivery.id}}</td>
                   <td>{{delivery.source}}</td>
                   <td>{{delivery.destination}}</td>
+                  <td>₹{{delivery.total_amount}}</td>
                   <td>
                       {% if not delivery.is_approved %}
                       <span class="badge bg-warning me-1">Pending</span>
