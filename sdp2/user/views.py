@@ -97,7 +97,7 @@ def register_view(request):
         filledform = SignUpForm(request.POST)
         if filledform.is_valid():
             filledform.save()
-            return redirect('userhome')
+            return redirect('userlogin')
         else:
             form = SignUpForm()
             return render(request, "user/register.html",{
