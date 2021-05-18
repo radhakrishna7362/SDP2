@@ -52,3 +52,21 @@ class Account(models.Model):
     role=models.CharField(max_length=1,choices=role_choices)
     def __str__(self):
         return self.user.get_username()
+
+class DeliveryBoy(RandomIDModel):
+    hub = models.ForeignKey(Hub,on_delete=models.CASCADE,related_name='+')
+    gen = [
+        ('M','Male'),
+        ('F','Female')
+    ]
+    gender = models.CharField(max_length=1,choices=gen)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    contact = models.CharField(max_length=100)
+    email = models.EmailField()
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

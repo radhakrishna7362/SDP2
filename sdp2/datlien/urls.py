@@ -33,4 +33,5 @@ urlpatterns = [
     path('viewStates/', views.viewStates, name='viewStates'),
     path('addCity/<int:id>', views.addCity, name='addCity'),
     path('state/<int:id>', views.state, name="state"),
+    path('addDeliveryBoy/<int:id>', views.addDeliveryBoy, name="addDeliveryBoy")
 ]

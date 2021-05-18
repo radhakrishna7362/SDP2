@@ -2,7 +2,7 @@
 
 {% load widget_tweaks %}
 {% block 'title' %}
-Sign In
+Delivery Agent
 {% endblock %}
 
 {% block 'body' %}
@@ -15,7 +15,7 @@ Sign In
       <form class="card card-md" method="POST">
           {% csrf_token %}
           <div class="card-body">
-            <h2 class="card-title text-center mb-4">Login to your account</h2>
+            <h2 class="card-title text-center mb-4">Add Delivery Agent</h2>
             {% if message %}
             <div class="text-center form-label invalid-feedback" style="font-size: medium;">
                 <b>{{ message }}</b>
@@ -28,15 +28,13 @@ Sign In
             </div>
             {% endfor %}
             <div class="form-footer">
-              <button type="submit" class="btn btn-primary w-100">Sign in</button>
-            </div>
-            <div class="mt-3">
-              <label class="form-check">
-                <span class="form-label-description"><a href="{% url 'userhome' %}">User Login</a></span>
-              </label>
+              <button type="submit" class="btn btn-primary w-100">Add</button>
             </div>
           </div>
       </form>
+      <div class="mb-4">
+        <a class="btn btn-success" href="{% url 'porders' %}"> <i class="fa fa-arrow-left"></i>&nbsp; Back </a>
+      </div>
     </div>
 </div>
 

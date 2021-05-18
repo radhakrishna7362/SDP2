@@ -1,7 +1,7 @@
-from user.models import Delivery
+from user.models import Delivery, DeliveryAgent
 from django.shortcuts import render, redirect
-from .forms import Profile,EditProfile,LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm,CityForm
-from .models import CentralHub, Hub, State, City, Account
+from .forms import DeliveryAgentForm, DeliveryBoyForm, Profile,EditProfile,LoginForm,CentralHubForm,EditCentralHubForm,HubForm,EditHubForm,SignUpForm,CityForm
+from .models import CentralHub, DeliveryBoy, Hub, State, City, Account
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
@@ -18,6 +18,11 @@ def home(request):
     c_hub = None
     hub =None
     history = None
+    deliveryboys = None
+    is_deliveryboy = False
+    p_orders=None
+    c_orders=None
+    print(superuser)
     if not superuser:
         try:
             c_hub = CentralHub.objects.get(username=username)
@@ -25,9 +30,21 @@ def home(request):
                 is_c_hub=True
                 hubs = Hub.objects.filter(central_hub=c_hub.id)
         except:
-            is_hub=True
-            hub = Hub.objects.get(username=username)
-            history = Delivery.objects.filter(source=hub.id)
+            try:
+                hub = Hub.objects.get(username=username)
+                if hub is not None:
+                    is_hub=True
+                    history = Delivery.objects.filter(source=hub.id)
+                    deliveryboys = DeliveryBoy.objects.filter(hub=hub.id)
+            except:
+                try:
+                    deliveryboy = DeliveryBoy.objects.get(username=username)
+                    if deliveryboy is not None:
+                        is_deliveryboy = True
+                        p_orders = DeliveryAgent.objects.filter(delivery_boy=deliveryboy,is_delivered=False)
+                        c_orders = DeliveryAgent.objects.filter(delivery_boy=deliveryboy,is_delivered=True)
+                except:
+                    pass
     return render(request, "datlien/index.html",{
         'username':username,
         'superuser':superuser,
@@ -36,7 +53,11 @@ def home(request):
         'hubs':hubs,
         'is_hub':is_hub,
         'hub':hub,
-        'history':history
+        'history':history,
+        "deliveryboys":deliveryboys,
+        "is_deliveryboy":is_deliveryboy,
+        "p_orders":p_orders,
+        "c_orders":c_orders
     })
 
 @unauthenticated_user
@@ -272,6 +293,26 @@ def state(request,id):
     })
 
 @login_required(login_url="login/")
+def addDeliveryBoy(request,id):
+    if request.method=="POST":
+        filledform=DeliveryBoyForm(request.POST)
+        if filledform.is_valid():
+            filledform.save()
+            User.objects.create_user(username=filledform.cleaned_data['username'],password=filledform.cleaned_data['password'],is_staff=True)
+            return redirect('home')
+    superuser = request.user.is_superuser
+    username = request.user.get_username()
+    initial_dict={
+        "hub":id
+    }
+    form = DeliveryBoyForm(initial=initial_dict)
+    return render(request,"datlien/addDeliveryBoy.html",{
+        "form":form,
+        'username':username,
+        'superuser':superuser,
+    })
+
+@login_required(login_url="login/")
 def addCity(request,id):
     if request.method == "POST":
         filledform = CityForm(request.POST)
@@ -281,20 +322,19 @@ def addCity(request,id):
         else:
             st = State.objects.get(pk=id)
             inital_dict={
-                "state":st.name,
-                "city":None
+                "state":st.id
             }
             form = CityForm(initial=inital_dict)
             return render(request,"datlien/addCity.html",{
                 "form":form,
-                "state":st
+                "state":st,
+                "message":"Try Again"
             })
     superuser = request.user.is_superuser
     username = request.user.get_username()
     st = State.objects.get(pk=id)
     inital_dict={
-        "state":st.id,
-        "city":None
+        "state":st.id
     }
     form = CityForm(initial=inital_dict)
     return render(request,"datlien/addCity.html",{
@@ -381,13 +421,29 @@ def receive(request,id):
 
 @login_required(login_url="login/")
 def out_for_delivery(request,id):
-    Delivery.objects.filter(pk=id).update(out_for_delivery = True)
-    return redirect('porders')
+    if request.method == "POST":
+        filledform = DeliveryAgentForm(request.POST)
+        if filledform.is_valid():
+            Delivery.objects.filter(pk=id).update(is_assigned = True, out_for_delivery=True)
+            filledform.save()
+            return redirect('porders')
+    delivery = Delivery.objects.get(pk=id)
+    initial_dict = {
+        "delivery":delivery
+    }
+    form = DeliveryAgentForm(initial=initial_dict)
+    return render(request,"datlien/addDeliveryAgent.html",{
+        "form":form
+    })
 
 @login_required(login_url="login/")
 def deliver(request,id):
+    username = request.user.get_username()
+    delivery = Delivery.objects.get(pk=id)
+    delivery_boy = DeliveryBoy.objects.get(username=username)
     Delivery.objects.filter(pk=id).update(is_delivered = True)
-    return redirect('porders')
+    DeliveryAgent.objects.filter(delivery=delivery,delivery_boy=delivery_boy).update(is_delivered = True)
+    return redirect('home')
 
 @login_required(login_url="login/")
 def profile(request):

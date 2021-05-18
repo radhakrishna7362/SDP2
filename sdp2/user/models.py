@@ -1,5 +1,5 @@
 from django.db import models
-from datlien.models import Hub
+from datlien.models import DeliveryBoy, Hub
 from datetime import datetime
 from django_random_id_model import RandomIDModel
 
@@ -13,9 +13,15 @@ class Delivery(RandomIDModel):
     is_shipped = models.BooleanField(default=False)
     is_transit = models.BooleanField(default=False)
     is_received = models.BooleanField(default=False)
+    is_assigned = models.BooleanField(default=False)
     out_for_delivery = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return f"{self.user} - {self.source} - {self.destination}"
+        return f"{self.id}"
+
+class DeliveryAgent(RandomIDModel):
+    delivery = models.ForeignKey(Delivery,on_delete=models.CASCADE,related_name='+',verbose_name="Package Id")
+    delivery_boy = models.ForeignKey(DeliveryBoy,on_delete=models.CASCADE,related_name='+')
+    is_delivered=models.BooleanField(default=False)
