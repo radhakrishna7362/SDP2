@@ -30,4 +30,8 @@ urlpatterns = [
     path('history/<int:id>', views.history, name="history"),
     path('c_hub_history/<int:id>', views.c_hub_history, name="c_hub_history"),
     path('hub_history/<int:id>', views.hub_history, name="hub_history"),
+    path('viewStates/', views.viewStates, name='viewStates'),
+    path('addCity/<int:id>', views.addCity, name='addCity'),
+    path('state/<int:id>', views.state, name="state"),
+    path('addDeliveryBoy/<int:id>', views.addDeliveryBoy, name="addDeliveryBoy")
 ]

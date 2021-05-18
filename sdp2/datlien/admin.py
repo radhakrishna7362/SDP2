@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Hub,State,CentralHub
+from .models import Account, Hub,State,CentralHub,City
 
 # Register your models here.
 class CentralHubAdmin(admin.ModelAdmin):
@@ -11,3 +11,5 @@ class HubAdmin(admin.ModelAdmin):
 admin.site.register(State)
 admin.site.register(Hub, HubAdmin)
 admin.site.register(CentralHub, CentralHubAdmin)
+admin.site.register(Account)
+admin.site.register(City)
