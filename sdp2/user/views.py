@@ -3,11 +3,12 @@ from .forms import LoginForm,SignUpForm,DeliveryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .decorators import unauthenticate_user
+from .decorators import access_roles, unauthenticate_user
 from .models import Delivery
 
 # Create your views here.
 @login_required(login_url='login/')
+@access_roles
 def home(request):
     if request.method == "POST":
         request.POST._mutable = True
