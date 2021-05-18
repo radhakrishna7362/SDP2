@@ -132,7 +132,7 @@ def addCentralHub(request):
             u = User.objects.filter(username=filledform.cleaned_data['username'])
             print(u)
             c_hub = CentralHub.objects.filter(username=filledform.cleaned_data['username'])
-            hub = Hub(central_hub=c_hub[0],city=c_hub[0].city,username=c_hub[0].username,password=c_hub[0].password,email=c_hub[0].email,address=c_hub[0].address)
+            hub = Hub(central_hub=c_hub[0],city=c_hub[0].city,username=c_hub[0].username,password=c_hub[0].password,email=c_hub[0].email,address=c_hub[0].address,base_fare=c_hub[0].base_fare)
             hub.save()
             return redirect('home')
         else:
@@ -162,8 +162,6 @@ def editCentralHub(request,username):
         central_hub = CentralHub.objects.get(username=username)
         filledform = EditCentralHubForm(request.POST,instance=central_hub)
         if filledform.is_valid():
-            u = User.objects.get(username=username)
-            u.set_password(filledform.cleaned_data['password'])
             filledform.save()
             return redirect('home')
         else:
@@ -237,7 +235,6 @@ def editHub(request,username):
         filledform = EditHubForm(request.POST,instance=hub)
         if filledform.is_valid():
             u = User.objects.get(username=username)
-            u.set_password(filledform.cleaned_data['password'])
             filledform.save()
             return redirect('home')
         else:

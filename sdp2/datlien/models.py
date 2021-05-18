@@ -23,6 +23,7 @@ class CentralHub(RandomIDModel):
     password = models.CharField(max_length=20)
     email = models.EmailField()
     address = models.CharField(max_length=100)
+    base_fare = models.DecimalField(max_digits=9,decimal_places=2,default=0)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     def __str__(self):
@@ -35,6 +36,7 @@ class Hub(RandomIDModel):
     password = models.CharField(max_length=20)
     email = models.EmailField()
     address = models.CharField(max_length=100)
+    base_fare = models.DecimalField(max_digits=9,decimal_places=2,default=0)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     def __str__(self):

@@ -1,3 +1,4 @@
+from datlien.views import deliver
 from django.shortcuts import render,HttpResponse, redirect
 from .forms import LoginForm,SignUpForm,DeliveryForm
 from django.contrib.auth import authenticate, login, logout
@@ -11,6 +12,7 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
+from datlien.models import Hub
 
 # Create your views here.
 @login_required(login_url='login/')
@@ -25,8 +27,6 @@ def home(request):
             username = request.user.get_username()
             initial_dict = {
                 "user" : username,
-                "source" : None,
-                "destination":None,
             }
             form = DeliveryForm(initial=initial_dict)
             history = Delivery.objects.filter(user=username)
@@ -37,15 +37,17 @@ def home(request):
                 'message':message
             })
         if filledform.is_valid():
-            filledform.save()
+            delivery = filledform.save(commit=False)
+            src_hub_fare = Hub.objects.get(pk=delivery.source.id)
+            dst_hub_fare = Hub.objects.get(pk=delivery.destination.id)
+            delivery.total_amount = int(int(src_hub_fare.base_fare) + int(dst_hub_fare.base_fare) + (delivery.weight*20/100)) 
+            delivery.save()
             return redirect('userhome')
         else:
             message = "Try Again"
             username = request.user.get_username()
             initial_dict = {
                 "user" : username,
-                "source" : None,
-                "destination":None,
             }
             form = DeliveryForm(initial=initial_dict)
             history = Delivery.objects.filter(user=username)
@@ -59,8 +61,6 @@ def home(request):
         username = request.user.get_username()
         initial_dict = {
             "user" : username,
-            "source" : None,
-            "destination":None,
         }
         form = DeliveryForm(initial=initial_dict)
         history = Delivery.objects.filter(user=username)
@@ -147,7 +147,7 @@ def activate(request, uidb64, token):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
-        user.save()
+        user.save()     
         login(request, user)
         # return redirect('home')
         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
