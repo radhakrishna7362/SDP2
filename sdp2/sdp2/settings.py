@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'datlien',
     'widget_tweaks',
     'user',
+    'rest_framework',
+    'chartjs'
 ]
 
 MIDDLEWARE = [
