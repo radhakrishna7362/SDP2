@@ -70,7 +70,41 @@
 {% load widget_tweaks %}
 
 <div class="container">
+  <form class="mt-3" method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-4 mb-3 form-group">
+        <label for="fromdate" class="form-label">From:</label>
+        <input class="form-control" type="date" name="fromdate" id="fromdate">
+      </div>
+      
+      <div class="col-4 mb-3 form-group">
+        <label for="todate" class="form-label">To:</label>
+        <input class="form-control" type="date" name="todate">
+      </div>
+
+      <div class="col-4 mb-3">
+        <label for="" class="form-label">&nbsp;</label>
+        <input type="submit" class="btn btn-success btn-md form-control" value="Filter">
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container">
   <div class="col-12 mt-3 mb-3">
+    
+    <div class="row mb-2">
+      <div class="col-8">
+        <h2>{{message}}</h2>
+      </div>
+      {% if orders_history %}
+      <div class="col-4" align='right'>
+        <a class="btn btn-success" onclick="exportTableToCSV('reports.csv')">Download</a>
+      </div>
+      {% endif %}
+    </div>
+    
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Orders History</h3>
@@ -89,7 +123,7 @@
           </thead>
           <tbody class="text-center">
             {% for delivery in orders_history %}
-            <tr>
+              <tr>
                 <td>{{delivery.created_on}}</td>
                 <td>{{delivery.id}}</td>
                 <td>{{delivery.user}}</td>
@@ -114,13 +148,56 @@
                       <span class="badge bg-success me-1">Delivered</span>
                     {% endif %}
                 </td>
-            </tr>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
+        {% if not orders_history %}
+          <div class="text-center mt-2">
+            <h3>Oops!! No Records Found</h3>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
+
+<script>
+
+  function downloadCSV(csv, filename) {
+      var csvFile;
+      var downloadLink;
+  
+      csvFile = new Blob([csv], {type: "text/csv"});
+  
+      downloadLink = document.createElement("a");
+  
+      downloadLink.download = filename;
+  
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+  
+      downloadLink.style.display = "none";
+  
+      document.body.appendChild(downloadLink);
+  
+      downloadLink.click();
+  }
+  
+  function exportTableToCSV(filename) {
+      var csv = [];
+      var rows = document.querySelectorAll("table tr");
+      
+      for (var i = 0; i < rows.length; i++) {
+          var row = [], cols = rows[i].querySelectorAll("td, th");
+          
+          for (var j = 0; j < cols.length; j++) 
+              row.push(cols[j].innerText);
+          
+          csv.push(row.join(","));        
+      }
+  
+      downloadCSV(csv.join("\n"), filename);
+  }
+  </script>
 
 {% endblock %}

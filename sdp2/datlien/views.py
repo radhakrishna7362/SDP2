@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+from django.db.models import Sum
 
 # Create your views here.
 @login_required(login_url="login/")
@@ -23,6 +24,24 @@ def home(request):
     is_deliveryboy = False
     p_orders=None
     c_orders=None
+    c_orders_count=None
+    p_orders_count=None
+    no_of_hubs=None
+    deliveryagents=None
+    total_no_orders=None
+    total_fare=None
+    user_count=None
+    p_deliveries_count=None
+    if superuser:
+        c_orders_count = Delivery.objects.filter(is_delivered=True).count()
+        p_orders_count = Delivery.objects.filter(is_delivered=False).count()
+        no_of_hubs = Hub.objects.all().count()
+        deliveryagents = DeliveryBoy.objects.all().count()
+        total_no_orders = Delivery.objects.all().count()
+        user_count = User.objects.filter(is_staff=False).count()
+        p_deliveries_count = Delivery.objects.filter(is_approved=False).count()
+        total_fare = Delivery.objects.all().aggregate(Sum('total_amount'))
+        pass
     if not superuser:
         try:
             c_hub = CentralHub.objects.get(username=username)
@@ -57,7 +76,15 @@ def home(request):
         "deliveryboys":deliveryboys,
         "is_deliveryboy":is_deliveryboy,
         "p_orders":p_orders,
-        "c_orders":c_orders
+        "c_orders":c_orders,
+        "c_orders_count":c_orders_count,
+        "p_orders_count":p_orders_count,
+        "no_of_hubs":no_of_hubs,
+        "deliveryagents":deliveryagents,
+        "total_no_orders":total_no_orders,
+        "p_deliveries_count":p_deliveries_count,
+        "total_fare":total_fare,
+        "user_count":user_count
     })
 
 @unauthenticated_user
@@ -577,6 +604,18 @@ def users(request):
 
 @login_required(login_url="login/")
 def orders_history(request):
+    if request.method=="POST":
+        from_date = request.POST['fromdate']
+        to_date = request.POST['todate']
+        orders_history = Delivery.objects.raw('select * from user_delivery where created_on between "'+from_date+'" and "'+to_date+'"')
+        superuser = request.user.is_superuser
+        username = request.user.get_username()
+        return render(request, "datlien/orders_history.html",{
+            'username':username,
+            'superuser':superuser,
+            'orders_history':orders_history,
+            'message':"Filter Results"
+        })
     superuser = request.user.is_superuser
     username = request.user.get_username()
     orders_history= Delivery.objects.all()
