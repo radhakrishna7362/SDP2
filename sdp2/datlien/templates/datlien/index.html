@@ -1,4 +1,5 @@
 {% extends "datlien/base.html" %}
+{% load static %}
 
 {% block 'header' %}
 <header class="navbar navbar-expand-md navbar-light d-print-none">
@@ -148,6 +149,124 @@
             </div>
             </div>
       </div>
+   </div>
+
+   <div class="container">
+     <div class="row">
+       <div class="col-4">
+        <canvas id="myChart" width="400" height="400"></canvas>
+        <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var hub_count = {{no_of_hubs}}
+        var user_count = {{user_count}}
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Hubs','Customers'],
+                datasets: [{
+                    label: 'Hubs - Customers',
+                    data: [ hub_count,user_count ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        </script>
+       </div>
+       <div class="col-4">
+        <canvas id="myChart1" width="400" height="400"></canvas>
+        <script>
+        var ctx = document.getElementById('myChart1').getContext('2d');
+        var orders_count = {{total_no_orders}}
+        var c_orders_count = {{c_orders_count}}
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Total Orders','Completed Orders'],
+                datasets: [{
+                    data: [ orders_count,c_orders_count ],
+                    backgroundColor: [
+                        '#1de9b6  ',
+                        '#c5e1a5 ',
+                    ],
+                    borderColor: [
+                        '#1de9b6  ',
+                        '#c5e1a5 ',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        });
+        </script>
+       </div>
+       <div class="col-4">
+        <canvas id="myChart2" width="400" height="400"></canvas>
+        <script>
+        var ctx = document.getElementById('myChart2').getContext('2d');
+        var Pending = {{pending}}
+        var Approved = {{approved}}
+        var Picked = {{picked}}
+        var Shipped = {{shipped}}
+        var Transit = {{transit}}
+        var Received = {{received}}
+        var Out_for_Delivery = {{out_for_delivery}}
+        var Delivered = {{delivered}}
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pending','Approved','Picked','Shipped','Transit','Received','Out_for_Delivery','Delivered'],
+                datasets: [{
+                    data: [ Pending,Approved,Picked,Shipped,Transit,Received,Out_for_Delivery,Delivered ],
+                    backgroundColor: [
+                        '#757575 ',
+                        '#f9a825 ',
+                        '#c6ff00 ',
+                        '#84ffff ',
+                        '#7e57c2 ',
+                        '#e57373 ',
+                        '#e1bee7 ',
+                        '#006064',
+                        '#004d40',
+                        '#1b5e20',
+                        '#33691e',
+                    ],
+                    borderColor: [
+                        '#757575 ',
+                        '#f9a825 ',
+                        '#c6ff00 ',
+                        '#84ffff ',
+                        '#7e57c2 ',
+                        '#e57373 ',
+                        '#e1bee7 ',
+                        '#006064',
+                        '#004d40',
+                        '#1b5e20',
+                        '#33691e',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+            },
+        });
+        </script>
+       </div>
+     </div>
    </div>
 {% endif %}
 {% if is_c_hub %}

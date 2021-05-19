@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'user',
     'rest_framework',
+    'chartjs'
 ]
 
 MIDDLEWARE = [

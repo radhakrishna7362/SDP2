@@ -32,7 +32,24 @@ def home(request):
     total_fare=None
     user_count=None
     p_deliveries_count=None
+    pending=None
+    approved=None
+    picked=None
+    shipped=None
+    transit=None
+    received=None
+    out_for_delivery=None
+    delivered=None
     if superuser:
+        pending = Delivery.objects.filter(is_approved=False).count()
+        approved = Delivery.objects.filter(is_picked=False).count()
+        picked = Delivery.objects.filter(is_shipped=False).count()
+        shipped = Delivery.objects.filter(is_transit=False).count()
+        transit = Delivery.objects.filter(is_received=False).count()
+        received = Delivery.objects.filter(out_for_delivery=False).count()
+        out_for_delivery = Delivery.objects.filter(out_for_delivery=True).count()
+        delivered = Delivery.objects.filter(is_delivered=True).count()
+
         c_orders_count = Delivery.objects.filter(is_delivered=True).count()
         p_orders_count = Delivery.objects.filter(is_delivered=False).count()
         no_of_hubs = Hub.objects.all().count()
@@ -84,7 +101,15 @@ def home(request):
         "total_no_orders":total_no_orders,
         "p_deliveries_count":p_deliveries_count,
         "total_fare":total_fare,
-        "user_count":user_count
+        "user_count":user_count,
+        "pending":pending,
+        "approved":approved,
+        "picked":picked,
+        "shipped":shipped,
+        "transit":transit,
+        "received":received,
+        "out_for_delivery":out_for_delivery,
+        "delivered":delivered
     })
 
 @unauthenticated_user
